@@ -1,0 +1,64 @@
+# Ignore .env files (custom environment configurations)
+.env
+.env.local
+.env.*.local
+.env.test.local
+.env.dist
+
+# Ignore log files
+/var/log/
+
+# Ignore cache
+/var/cache/
+
+# Ignore session files
+/var/sessions/
+
+# Ignore build and composer files
+/vendor/
+/node_modules/
+
+# Ignore compiled front-end files (for example if using Webpack Encore)
+public/build/
+public/bundles/
+
+# Ignore user-specific files (IDE/editor settings, OS files, etc.)
+*.DS_Store
+.idea/
+/.vscode/
+*.swp
+*.bak
+
+# Ignore Symfony profiler data
+/var/profiler/
+
+# Ignore PHPUnit results
+/phpunit.result.cache
+
+# Ignore coverage reports
+/coverage/
+/tests/_output/
+
+# Ignore security checker data
+/security-checker
+
+# Ignore Tailwind build artifacts
+/public/css/tailwind.css
+/public/css/tailwind.css.map
+
+# Ignore Docker files (if using Docker)
+docker-compose.override.yml
+docker-compose.yml
+docker-compose.dev.yml
+/.docker
+
+# Ignore translations cache
+/var/translations/
+
+# Ignore other unneeded system files
+Thumbs.db
+*.log
+*.lock
+
+# Ignore binary data (like compiled assets)
+public/assets/
