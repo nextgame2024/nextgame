@@ -1,0 +1,220 @@
+<div id="loading-spinner" class="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-50 z-50" style="display: none;">
+    <svg class="w-16 h-16 text-gray-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+    </svg>
+</div>
+
+<div class="overflow-x-auto">
+    <div class="mt-2 mb-3 flex justify-between">
+        <form method="GET" action="{{ path('app_dashboard_users') }}" class="flex items-center">
+            <select name="search_by" class="border border-gray-300 rounded px-2 py-1 h-10 w-80 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                <option value="u.email" {{ search_by == 'u.email' ? 'selected' : '' }}>Username</option>
+                <option value="p.name" {{ search_by == 'p.name' ? 'selected' : '' }}>Name</option>
+                <option value="p.phone" {{ search_by == 'p.phone' ? 'selected' : '' }}>Phone</option>
+                <option value="p.dateOfBirth" {{ search_by == 'p.dateOfBirth' ? 'selected' : '' }}>DoB</option>
+                <option value="p.rating" {{ search_by == 'p.rating' ? 'selected' : '' }}>Rating</option>
+                <option value="d.name" {{ search_by == 'd.name' ? 'selected' : '' }}>Division</option>
+            </select>
+            <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="ml-2 w-80 border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            <button type="submit" class="ml-2 bg-blue-500 text-white py-2 px-4 rounded h-10 hover:bg-blue-600" onclick="showLoadingSpinner()">Search</button>
+        </form>
+        <a href="{{ path('app_dashboard_user') }}" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onclick="showLoadingSpinner()">Create</a>
+    </div>
+    <table class="min-w-full bg-white border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-900">
+        <thead class="bg-gray-50 dark:bg-gray-700 dark:text-white">
+            <tr>
+                <th class="py-2 px-4 border-b dark:border-gray-600">
+                    <a href="{{ path('app_dashboard_users', {sort_by: 'u.email', order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="flex items-center" onclick="showLoadingSpinner()">
+                        Username
+                        {% if sort_by == 'u.email' %}
+                            {% if order == 'ASC' %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                            {% else %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 8l6 6H6l6-6z"/></svg>
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th class="py-2 px-4 border-b dark:border-gray-600">
+                    <a href="{{ path('app_dashboard_users', {sort_by: 'p.name', order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="flex items-center" onclick="showLoadingSpinner()">
+                        Name
+                        {% if sort_by == 'p.name' %}
+                            {% if order == 'ASC' %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                            {% else %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 8l6 6H6l6-6z"/></svg>
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th class="py-2 px-4 border-b dark:border-gray-600">
+                    <a href="{{ path('app_dashboard_users', {sort_by: 'p.phone', order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="flex items-center" onclick="showLoadingSpinner()">
+                        Phone
+                        {% if sort_by == 'p.phone' %}
+                            {% if order == 'ASC' %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                            {% else %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 8l6 6H6l6-6z"/></svg>
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th class="py-2 px-4 border-b dark:border-gray-600">
+                    <a href="{{ path('app_dashboard_users', {sort_by: 'p.dateOfBirth', order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="flex items-center" onclick="showLoadingSpinner()">
+                        DoB
+                        {% if sort_by == 'p.dateOfBirth' %}
+                            {% if order == 'ASC' %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                            {% else %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 8l6 6H6l6-6z"/></svg>
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th class="py-2 px-4 border-b dark:border-gray-600">
+                    <a href="{{ path('app_dashboard_users', {sort_by: 'p.rating', order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="flex items-center" onclick="showLoadingSpinner()">
+                        Rating
+                        {% if sort_by == 'p.rating' %}
+                            {% if order == 'ASC' %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                            {% else %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 8l6 6H6l6-6z"/></svg>
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th class="py-2 px-4 border-b dark:border-gray-600 text-center">
+                    <a href="{{ path('app_dashboard_users', {sort_by: 'd.name', order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="flex items-center justify-center" onclick="showLoadingSpinner()">
+                        Division
+                        {% if sort_by == 'd.name' %}
+                            {% if order == 'ASC' %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg>
+                            {% else %}
+                                <svg class="w-5 h-5 ml-1 fill-current" viewBox="0 0 24 24"><path d="M12 8l6 6H6l6-6z"/></svg>
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th class="py-2 px-4 border-b dark:border-gray-600 text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if users|length > 0 %}
+                {% for user in users %}
+                    <tr>
+                        <td class="py-2 px-4 border-b dark:border-gray-600">{{ user.email }}</td>
+                        <td class="py-2 px-4 border-b dark:border-gray-600">{{ user.userProfile.name | default('-') }}</td>
+                        <td class="py-2 px-4 border-b dark:border-gray-600">{{ user.userProfile.phone | default('-') }}</td>
+                        <td class="py-2 px-4 border-b dark:border-gray-600">
+                            {% if user.userProfile %}
+                                {{ user.userProfile.dateOfBirth|date('Y-m-d') | default('-') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="py-2 px-4 border-b dark:border-gray-600">{{ user.userProfile.rating | default('-') }}</td>
+                        <td class="py-2 px-4 border-b dark:border-gray-600 text-center">{{ user.userProfile.division.name | default('-') }}</td>
+                        <td class="py-2 px-4 border-b dark:border-gray-600 text-center">
+                            <a href="{{ path('app_dashboard_user_edit', {id: user.id}) }}" class="text-blue-500" onclick="showLoadingSpinner()">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <button type="button" class="text-red-500 ml-3" data-modal-target="deleteModal-{{ user.id }}">
+                            <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <!-- Modal -->
+                            <div id="deleteModal-{{ user.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                                <div class="flex items-center justify-center min-h-screen px-4 text-center">
+                                    <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
+                                        <h2 class="text-lg font-semibold mb-4">Are you sure you want to delete this user?</h2>
+                                        <p class="mb-6">This action cannot be undone.</p>
+                                        <form method="post" action="{{ path('app_dashboard_users_delete', {id: user.id}) }}" onsubmit="showLoadingSpinner('{{ user.id }}')">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                            <div class="flex justify-center">
+                                                <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded mr-2" onclick="closeModal('deleteModal-{{ user.id }}')">Cancel</button>
+                                                <button type="submit" id="deleteBtn-{{ user.id }}" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">Delete</button>
+                                            </div>
+                                        </form>
+                                        <div id="spinner-{{ user.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+                                            <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                document.querySelectorAll('[data-modal-target]').forEach(button => {
+                                    button.addEventListener('click', function() {
+                                        const modal = document.getElementById(this.getAttribute('data-modal-target'));
+                                        modal.classList.remove('hidden');
+                                    });
+                                });
+
+                                function closeModal(modalId) {
+                                    document.getElementById(modalId).classList.add('hidden');
+                                }
+
+                                function showLoadingSpinner(userId) {
+                                    const modalContent = document.querySelector('#deleteModal-' + userId + ' > .flex > .relative');
+                                    modalContent.classList.add('hidden');
+                                    const spinner = document.getElementById('spinner-' + userId);
+                                    spinner.classList.remove('hidden');
+                                    const modal = document.getElementById('deleteModal-' + userId);
+                                    modal.classList.add('hidden');
+                                }
+                            </script>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">There's nothing here yet!</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-4">
+    <nav>
+        <ul class="inline-flex -space-x-px">
+            {% if current_page > 1 %}
+                <li>
+                    <a href="{{ path('app_dashboard_users', {page: current_page - 1, sort_by: sort_by, order: order}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
+                </li>
+            {% else %}
+                <li>
+                    <span class="px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Previous</span>
+                </li>
+            {% endif %}
+            {% for page in 1..total_pages %}
+                <li>
+                    <a href="{{ path('app_dashboard_users', {page: page, sort_by: sort_by, order: order}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
+                </li>
+            {% endfor %}
+            {% if current_page < total_pages %}
+                <li>
+                    <a href="{{ path('app_dashboard_users', {page: current_page + 1, sort_by: sort_by, order: order}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
+                </li>
+            {% else %}
+                <li>
+                    <span class="px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Next</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Loading -->
+<script>
+    function showLoadingSpinner() {
+        document.getElementById('loading-spinner').style.display = 'flex';
+    }
+
+    window.addEventListener('pageshow', function() {
+        document.getElementById('loading-spinner').style.display = 'none';
+    });
+</script>

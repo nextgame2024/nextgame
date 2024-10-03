@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="flex items-center justify-center mt-[10%] bg-gray-50 dark:bg-gray-900">
+    <div class="w-full md:w-[60%] lg:w-[40%] mx-auto">
+        <form action="{{ path('app_login') }}" method="POST" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <div class="text-center">
+                <label class="block text-3xl text-gray-700 dark:text-gray-300 font-medium">Login</label>
+                <label class="block text-sm text-gray-700 dark:text-gray-300 font-medium mt-4 mb-5">Welcome to your Next Game</label>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-700 dark:text-gray-300 font-medium">Email</label>
+                <input type="text" name="_username" value="{{ lastUsername }}" class="block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2" />
+            </div>
+            <div>
+                <label class="block text-sm text-gray-700 dark:text-gray-300 font-medium">Password</label>
+                <input type="password" name="_password" class="block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2"/>
+            </div>
+
+            <input type="hidden" name="_target_path" value="/dashboard" />
+
+            <div class="mt-10">
+                <button type="submit" class="block w-full shadow-sm border-transparent bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white rounded-md border p-2 mt-4 mb-2">Login</button>
+            </div>
+
+            <div class="mt-2 text-center text-gray-600 dark:text-gray-400">
+                Don't have an account? <a href="{{ path('app_register') }}">Register here</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% embed 'shared/_tabs.html.twig' %}
+    {% block tabs %}
+        {% embed 'shared/_tab.html.twig' with { route: 'app_micro_post' } %}
+            {% block content %}
+                Dashboard 
+            {% endblock %}
+            {% block path %}
+            {{ path('app_micro_post') }}
+            {% endblock %}
+        {% endembed %}
+
+        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_users', classes: 'ml-2' } %}
+            {% block content %}
+                | Users 
+            {% endblock %}
+            {% block path %}
+            {{ path('app_dashboard_users') }}
+            {% endblock %}
+        {% endembed %}
+
+        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_tournament', classes: 'ml-2' } %}
+            {% block content %}
+                | Tournaments  
+            {% endblock %}
+            {% block path %}
+            {{ path('app_dashboard_tournament') }}
+            {% endblock %}
+        {% endembed %}
+
+        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_registration', classes: 'ml-2' } %}
+            {% block content %}
+                | Registration 
+            {% endblock %}
+            {% block path %}
+            {{ path('app_dashboard_registration') }}
+            {% endblock %}
+        {% endembed %}
+
+        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_games', classes: 'ml-2' } %}
+            {% block content %}
+                | Games 
+            {% endblock %}
+            {% block path %}
+            {{ path('app_dashboard_games') }}
+            {% endblock %}
+        {% endembed %}
+
+        {# {% embed 'shared/_tab.html.twig' with { route: 'app_micro_post_topliked', classes: 'ml-2' } %}
+            {% block content %}
+                 | Registration 
+            {% endblock %}
+            {% block path %}
+            {{ path('app_micro_post_topliked') }}
+            {% endblock %}
+        {% endembed %} #}
+
+    {% endblock %}
+{% endembed %}

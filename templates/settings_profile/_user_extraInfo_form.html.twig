@@ -1,0 +1,69 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+        {{ form_label(form.name, 'Name', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+        {{ form_widget(form.name, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+    </div>
+
+    <div>
+        {{ form_label(form.location, 'Location', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+        <div class="relative">
+            {{ form_widget(form.location, {'attr': {'class': 'block w-full text-white shadow-sm border-gray-300 dark:border-transparent dark:text-white rounded-md border p-2 mt-1 mb-2'}}) }}
+
+            <select name="{{ form.location.vars.full_name }}" 
+                    class="absolute inset-0 block w-full shadow-sm bg-white border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-0 mb-2 dark:bg-slate-950"
+                    id="{{ form.location.vars.id }}"
+                    style="height: calc(1.875rem + 9px);">
+                {% for choice in form.location.vars.choices %}
+                    <option value="0" {% if not isEdit %}selected{% endif %}>Select an option</option>
+                    {% if choice.label == location.name %}
+                        <option value="{{ choice.value }}" {% if isEdit %}selected{% endif %}>
+                            {{ choice.label }}
+                        </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+        {{ form_label(form.phone, 'Phone', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+        {{ form_widget(form.phone, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}  
+    </div>
+
+    <div>
+        {{ form_label(form.dateOfBirth, 'Date of birth', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+        {{ form_widget(form.dateOfBirth, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 bg-white rounded-md border p-2 mt-1 mb-2'}}) }}
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+        {{ form_label(form.rating, 'Rating', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+        {{ form_widget(form.rating, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 bg-white rounded-md border p-2 mt-1 mb-2'}}) }}
+    </div>
+
+    <div>
+        {{ form_label(form.division, 'Division', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+        <div class="relative">
+            {{ form_widget(form.division, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}  
+            <select name="{{ form.division.vars.full_name }}" 
+                    class="absolute inset-0 block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-0 mb-2"
+                    id="{{ form.division.vars.id }}"
+                    style="height: calc(1.875rem + 9px);">
+                
+                {% for choice in form.division.vars.choices %}
+                    {% for divisions in division %}
+                        {% if choice.label == divisions.name %}
+                            <option value="{{ choice.value }}" {% if choice.value == form.division.vars.value %}selected{% endif %}>
+                                {{ choice.label }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

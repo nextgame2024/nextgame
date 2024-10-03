@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Games{% endblock %}
+
+{% block bread %}
+→ Games
+{% endblock %}
+
+{% block body %}
+{{ include ('dashboard/_dashboard_tabs.html.twig') }}
+{{ include ('dashboard/_tournament_games_list.html.twig') }}
+{% endblock %}

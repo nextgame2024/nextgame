@@ -1,0 +1,301 @@
+<div id="loading-spinner" class="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-50 z-50" style="display: none;">
+    <svg class="w-16 h-16 text-gray-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+    </svg>
+</div>
+
+<div class="overflow-x-auto">
+    <div class="mt-2 mb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <form method="GET" action="{{ path('app_dashboard_tournament') }}" class="flex flex-col sm:flex-row w-full sm:w-auto items-start sm:items-center">
+            <select name="search_by" class="border border-gray-300 rounded px-2 py-1 h-10 w-full sm:w-80 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                <option value="tournament_type" {{ search_by == 'tournament_type' ? 'selected' : '' }}>Tournament name</option>
+                <option value="t.start_day" {{ search_by == 't.start_day' ? 'selected' : '' }}>Start day</option>
+                <option value="t.end_day" {{ search_by == 't.end_day' ? 'selected' : '' }}>End day</option>
+                <option value="t.status" {{ search_by == 't.status' ? 'selected' : '' }}>Status</option>
+            </select>
+            <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="mt-2 sm:mt-0 sm:ml-2 w-full sm:w-80 border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-blue-500 text-white py-2 px-4 rounded h-10 hover:bg-blue-600" onclick="showLoadingSpinner()">Search</button>
+        </form>
+
+        <a href="{{ path('app_dashboard_create_tournament') }}" class="mt-2 sm:mt-0 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onclick="showLoadingSpinner()">Create</a>
+    </div>
+    <div class="space-y-2">
+    {% if tournament_registration|length > 0 %}
+        {% for registration in tournament_registration %}
+            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 items-center">
+                    <div class="col-span-1 lg:col-span-1">
+                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[50px] w-[50px] rounded-full ring-2 ring-white dark:ring-gray" />
+                    </div>
+                    <div class="col-span-1 sm:col-span-1 lg:col-span-1">
+                        <div class="font-semibold text-lg dark:text-white">{{ registration.tournament_type }}</div>
+                        <p><span class="font-medium">Location:</span> {{ registration.location | default('-') }}</p>
+                    </div>
+                    <div class="col-span-1 sm:col-span-1 lg:col-span-1">
+                        <p><span class="font-medium">Hour:</span> 
+                            {% if registration.hour %}
+                                {{ registration.hour|date('h:i a') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </p>
+                        <p><span class="font-medium">Status:</span> {{ registration.status | default('-') }}</p>
+                    </div>
+                    <div class="col-span-1 sm:col-span-1 lg:col-span-1">
+                        <p><span class="font-medium">Start:</span>
+                            {% if registration.start_day %}
+                                {{ registration.start_day|date('Y-m-d') | default('-') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </p>
+                        <p><span class="font-medium">End:</span>
+                            {% if registration.end_day %}
+                                {{ registration.end_day|date('Y-m-d') | default('-') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-3 justify-end">
+                        <!-- Registered User Button -->
+                        {% if registration.registeredUser %}
+                            <div class="relative group">
+                                <button type="button" class="text-green-500 text-2xl" data-modal-target="registrationModal-{{ registration.id }}" disabled>
+                                    <i class="fa-duotone fa-solid fa-user-check"></i>
+                                </button>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                    Registered
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="relative group">
+                                <button type="button" class="text-yellow-500 text-2xl" data-modal-target="registrationModal-{{ registration.id }}">
+                                    <i class="fa-duotone fa-solid fa-user-check"></i>
+                                </button>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                    Register here
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Create Games Button -->
+                        {% if registration.status == 'Games created' %}
+                            <div class="relative group">
+                                <button type="button" class="text-green-500 text-2xl" data-modal-target="createGamesModal-{{ registration.id }}" disabled>
+                                    <i class="fa-duotone fa-solid fa-table-tennis-paddle-ball"></i>
+                                </button>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                    Games created
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="relative group">
+                                <button type="button" class="text-yellow-500 text-2xl" data-modal-target="createGamesModal-{{ registration.id }}">
+                                    <i class="fa-duotone fa-solid fa-table-tennis-paddle-ball"></i>
+                                </button>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                    Create Games
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Delete Button -->
+                        <div class="relative group">
+                            <button type="button" class="text-red-500 text-2xl" data-modal-target="deleteModal-{{ registration.id }}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                Delete
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registration Modal -->
+                <div id="registrationModal-{{ registration.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                    <div class="flex items-center justify-center min-h-screen px-4 text-center">
+                        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
+                            <h2 class="text-lg font-semibold mb-4">Do you want to join this tournament?</h2>
+                            <p class="mb-6">Please verify and confirm the action.</p>
+                            <form method="post" action="{{ path('app_dashboard_registration_user', {id: registration.id}) }}" onsubmit="showLoadingSpinner('{{ registration.id }}')">
+                                <input type="hidden" name="tournament_id" value="{{ registration.id }}">
+                                <input type="hidden" name="players" value="{{ registration.players }}">
+                                
+                                <div class="flex justify-center">
+                                    <button type="submit" id="registerBtn-{{ registration.id }}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mr-2">Submit</button>
+                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('registrationModal-{{ registration.id }}')">Cancel</button>
+                                </div>
+                            </form>
+                            <div id="spinner-{{ registration.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+                                <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Games Modal -->
+                <div id="createGamesModal-{{ registration.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                    <div class="flex items-center justify-center min-h-screen px-4 text-center">
+                        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
+                            <h2 class="text-lg font-semibold mb-4">Are you sure you want to create the games?</h2>
+                            <p class="mb-6">This action may take a few minutes and cannot be undone.</p>
+                            <form method="post" action="{{ path('app_dashboard_create_games', {id: registration.id}) }}" onsubmit="showLoadingSpinner('{{ registration.id }}')">
+                                <input type="hidden" name="tournament_id" value="{{ registration.id }}">
+                                <input type="hidden" name="players" value="{{ registration.players }}">
+                                
+                                <div class="flex justify-center">
+                                    <button type="submit" id="createGamesBtn-{{ registration.id }}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mr-2">Submit</button>
+                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('createGamesModal-{{ registration.id }}')">Cancel</button>
+                                </div>
+                            </form>
+                            <div id="spinner-{{ registration.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+                                <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Modal -->
+                <div id="deleteModal-{{ registration.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                    <div class="flex items-center justify-center min-h-screen px-4 text-center">
+                        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
+                            <h2 class="text-lg font-semibold mb-4">Are you sure you want to delete this tournament?</h2>
+                            <p class="mb-6">This action cannot be undone.</p>
+                            <form method="post" action="{{ path('app_dashboard_tournament_delete', {id: registration.id}) }}" onsubmit="showLoadingSpinner('{{ registration.id }}')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ registration.id) }}">
+                                <div class="flex justify-center">
+                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded mr-2" onclick="closeModal('deleteModal-{{ registration.id }}')">Cancel</button>
+                                    <button type="submit" id="deleteBtn-{{ registration.id }}" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">Delete</button>
+                                </div>
+                            </form>
+                            <div id="spinner-{{ registration.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+                                <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                <script>
+                    document.querySelectorAll('[data-modal-target]').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const modal = document.getElementById(this.getAttribute('data-modal-target'));
+                            modal.classList.remove('hidden');
+                        });
+                    });
+
+                    function closeModal(modalId) {
+                        document.getElementById(modalId).classList.add('hidden');
+                    }
+
+                    function showLoadingSpinner(user_profile_id) {
+                        const modalContent = document.querySelector('#createGamesModal-' + user_profile_id + ' > .flex > .relative');
+                        modalContent.classList.add('hidden');
+                        const spinner = document.getElementById('spinner-' + user_profile_id);
+                        spinner.classList.remove('hidden');
+                        const modal = document.getElementById('createGamesModal-' + user_profile_id);
+                        modal.classList.add('hidden');
+                    }
+                </script>
+                <script>
+                    document.querySelectorAll('[data-modal-target]').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const modal = document.getElementById(this.getAttribute('data-modal-target'));
+                            modal.classList.remove('hidden');
+                        });
+                    });
+
+                    function closeModal(modalId) {
+                        document.getElementById(modalId).classList.add('hidden');
+                    }
+
+                    function showLoadingSpinner(user_profile_id) {
+                        const modalContent = document.querySelector('#registrationModal-' + user_profile_id + ' > .flex > .relative');
+                        modalContent.classList.add('hidden');
+                        const spinner = document.getElementById('spinner-' + user_profile_id);
+                        spinner.classList.remove('hidden');
+                        const modal = document.getElementById('registrationModal-' + user_profile_id);
+                        modal.classList.add('hidden');
+                    }
+                </script>
+                <script>
+                    document.querySelectorAll('[data-modal-target]').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const modal = document.getElementById(this.getAttribute('data-modal-target'));
+                            modal.classList.remove('hidden');
+                        });
+                    });
+
+                    function closeModal(modalId) {
+                        document.getElementById(modalId).classList.add('hidden');
+                    }
+
+                    function showLoadingSpinner(tournamentId) {
+                        const modalContent = document.querySelector('#deleteModal-' + tournamentId + ' > .flex > .relative');
+                        modalContent.classList.add('hidden');
+                        const spinner = document.getElementById('spinner-' + tournamentId);
+                        spinner.classList.remove('hidden');
+                        const modal = document.getElementById('deleteModal-' + tournamentId);
+                        modal.classList.add('hidden');
+                    }
+                </script>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-4">There's nothing here yet!</div>
+    {% endif %}
+</div>
+
+</div>
+
+<div class="mt-4">
+    <nav>
+        <ul class="inline-flex -space-x-px">
+            {% if current_page > 1 %}
+                <li>
+                    <a href="{{ path('app_dashboard_registration', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
+                </li>
+            {% else %}
+                <li>
+                    <span class="px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Previous</span>
+                </li>
+            {% endif %}
+            {% for page in 1..total_pages %}
+                <li>
+                    <a href="{{ path('app_dashboard_registration', {page: page, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
+                </li>
+            {% endfor %}
+            {% if current_page < total_pages %}
+                <li>
+                    <a href="{{ path('app_dashboard_registration', {page: current_page + 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
+                </li>
+            {% else %}
+                <li>
+                    <span class="px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Next</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Loading -->
+<script>
+    function showLoadingSpinner() {
+        document.getElementById('loading-spinner').style.display = 'flex';
+    }
+
+    window.addEventListener('pageshow', function() {
+        document.getElementById('loading-spinner').style.display = 'none';
+    });
+</script>

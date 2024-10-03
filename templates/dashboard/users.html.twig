@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block bread %}
+→ Users
+{% endblock %}
+
+{% block body %}
+{{ include ('dashboard/_dashboard_tabs.html.twig') }}
+{{ include ('dashboard/_users_list.html.twig') }}
+{% endblock %}

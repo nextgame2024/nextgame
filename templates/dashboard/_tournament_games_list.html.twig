@@ -1,0 +1,258 @@
+<div id="loading-spinner" class="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-50 z-50" style="display: none;">
+    <svg class="w-16 h-16 text-gray-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+    </svg>
+</div>
+
+<div class="overflow-x-auto">
+    <div class="mt-2 mb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <form method="GET" action="{{ path('app_dashboard_games') }}" class="flex flex-col sm:flex-row w-full sm:w-auto items-start sm:items-center">
+            <select name="search_by" class="border border-gray-300 rounded px-2 py-1 h-10 w-full sm:w-80 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                <option value="ttournament_type_name" {{ search_by == 'tournament_type_name' ? 'selected' : '' }}>Tournament name</option>
+                <option value="t.start_day" {{ search_by == 't.start_day' ? 'selected' : '' }}>Start day</option>
+                <option value="t.end_day" {{ search_by == 't.end_day' ? 'selected' : '' }}>End day</option>
+                <option value="g.game_date" {{ search_by == 'g.game_date' ? 'selected' : '' }}>Date</option>
+                <option value="team1_name" {{ search_by == 'team1_name' ? 'selected' : '' }}>Team 1</option>
+                <option value="team2_name" {{ search_by == 'team2_name' ? 'selected' : '' }}>Team 2</option>
+                <option value="player_one_name" {{ search_by == 'player_one_name' ? 'selected' : '' }}>Player 1</option>
+                <option value="player_two_name" {{ search_by == 'player_two_name' ? 'selected' : '' }}>Player 2</option>
+                <option value="g.round" {{ search_by == 'g.round' ? 'selected' : '' }}>Round</option>
+                <option value="division_name" {{ search_by == 'division_name' ? 'selected' : '' }}>Division</option>
+                <option value="g.game_type" {{ search_by == 'g.game_type' ? 'selected' : '' }}>Type</option>
+                <option value="table_name" {{ search_by == 'table_name' ? 'selected' : '' }}>Table</option>
+            </select>
+            <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="mt-2 sm:mt-0 sm:ml-2 w-full sm:w-80 border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-blue-500 text-white py-2 px-4 rounded h-10 hover:bg-blue-600" onclick="showLoadingSpinner()">Search</button>
+        </form>
+
+        <a href="{{ path('app_dashboard_create_game') }}" class="mt-2 sm:mt-0 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onclick="showLoadingSpinner()">Create</a>
+    </div>
+    <div class="space-y-2">
+    {% if tournament_games|length > 0 %}
+        {% for games in tournament_games %}
+            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[3%_10%_8%_8%_9%_9%_14%_14%_12%_6%] gap-3 items-center">
+                    <div>
+                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[50px] w-[50px] rounded-full ring-2 ring-white dark:ring-gray" />
+                    </div>
+                    <div>
+                        <div class="font-semibold text-lg dark:text-white">{{ games.tournament_type_name }}</div>
+                        <p><span class="font-medium">Location:</span> {{ games.location_name | default('-') }}</p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Round:</span> {{ games.round | default('-') }}</p>
+                        <p><span class="font-medium">Table:</span> {{ games.table_name | default('-') }}</p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Start:</span>
+                            {% if games.start_day %}
+                                {{ games.start_day|date('Y-m-d') | default('-') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </p>
+                        <p><span class="font-medium">Hour:</span> 
+                            {% if games.hour %}
+                                {{ games.hour|date('h:i a') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Team 1:</span> {{ games.team1_name | default('-') }}</p>
+                        <p><span class="font-medium">Team 2:</span> {{ games.team2_name | default('-') }}</p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Type:</span> {{ games.game_type | default('-') }}</p>
+                        <p><span class="font-medium">Division:</span> {{ games.division_name | default('-') }}</p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Player T1:</span> {{ games.player_one_name | default('-') }}</p>
+                        <p><span class="font-medium">Player T2:</span> {{ games.player_two_name | default('-') }}</p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Player T1:</span> {{ games.player_three_name | default('-') }}</p>
+                        <p><span class="font-medium">Player T2:</span> {{ games.player_four_name | default('-') }}</p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Date:</span> {{ games.game_date | default('-') }}</p>
+                        <p><span class="font-medium">Status:</span> {{ games.status | default('-') }}</p>
+                    </div>
+                    <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex items-center space-x-3 justify-end relative">
+                        <div>
+                            <label for="team_{{ games.id }}" class="font-medium">Payment:</label>
+                            <select id="team_{{ games.id}}" name="team" 
+                                    class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    onchange="confirmTeamChange({{ games.id }}, this.value)">
+                                {% for currentPayment in payment %}
+                                    <option value="{{ currentPayment }}" {% if games.is_paid == currentPayment %}selected{% endif %}>
+                                        {{ currentPayment }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <a href="{{ path('app_dashboard_edit_game', {id: games.id}) }}" class="text-blue-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                            <i class="fas fa-pencil-alt"></i>
+                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                Edit
+                            </div>
+                        </a>
+                        
+                        {% if games.status == 'Open' %}
+                            <button type="button" class="text-yellow-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.id }}">
+                                <i class="fa-duotone fa-solid fa-user-check"></i>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                    style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                    Register here
+                                </div>
+                            </button>
+                        {% else %}
+                            <button type="button" class="text-green-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.id }}">
+                                <i class="fa-duotone fa-solid fa-user-check"></i>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                    style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                    Leave the tournament
+                                </div>
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div id="deleteModal-{{ games.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                    <div class="flex items-center justify-center min-h-screen px-4 text-center">
+                        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
+                            <h2 class="text-lg font-semibold mb-4">Are you sure you want to continue?</h2>
+                            <p class="mb-6">Please verify and confirm the action.</p>
+                            <form method="post" action="{{ path('app_dashboard_games', {id: games.id}) }}" onsubmit="showLoadingSpinner('{{ games.id }}')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ games.id) }}">
+                                <div class="flex justify-center">
+                                    <button type="submit" id="deleteBtn-{{ games.id }}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded  mr-2">Submit</button>
+                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('deleteModal-{{ games.id }}')">Cancel</button>
+                                </div>
+                            </form>
+                            <div id="spinner-{{ games.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+                                <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <!-- teamChangeModal -->
+                <div id="teamChangeModal-{{ games.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                    <div class="flex items-center justify-center min-h-screen px-4 text-center">
+                        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
+                            <h2 class="text-lg font-semibold mb-4">Are you sure you want to change the team?</h2>
+                            <p class="mb-6">Please verify that all teams have been properly formed.</p>
+                            <form method="post" action="{{ path('app_dashboard_change_team', {id: games.id}) }}" onsubmit="showLoadingSpinner('{{ games.id }}')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('change-team' ~ games.id) }}">
+                                <input type="hidden" id="new_team_id-{{ games.id }}" name="new_team_id">
+                                <div class="flex justify-center">
+                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mr-2">Submit</button>
+                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('teamChangeModal-{{ games.id }}')">Cancel</button>
+                                </div>
+                            </form>
+                            <div id="spinner-{{ games.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+                                <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function confirmTeamChange(tournamentId, newTeamId) {
+                        document.getElementById('new_team_id-' + tournamentId).value = newTeamId;
+                        const modal = document.getElementById('teamChangeModal-' + tournamentId);
+                        modal.classList.remove('hidden');
+                    }
+
+                    function closeModal(modalId) {
+                        document.getElementById(modalId).classList.add('hidden');
+                    }
+
+                    function showLoadingSpinner(tournamentId) {
+                        const modalContent = document.querySelector('#teamChangeModal-' + tournamentId + ' > .flex > .relative');
+                        modalContent.classList.add('hidden');
+                        const spinner = document.getElementById('spinner-' + tournamentId);
+                        spinner.classList.remove('hidden');
+                    }
+                </script>
+                <script>
+                    document.querySelectorAll('[data-modal-target]').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const modal = document.getElementById(this.getAttribute('data-modal-target'));
+                            modal.classList.remove('hidden');
+                        });
+                    });
+
+                    function closeModal(modalId) {
+                        document.getElementById(modalId).classList.add('hidden');
+                    }
+
+                    function showLoadingSpinner(userId) {
+                        const modalContent = document.querySelector('#deleteModal-' + userId + ' > .flex > .relative');
+                        modalContent.classList.add('hidden');
+                        const spinner = document.getElementById('spinner-' + userId);
+                        spinner.classList.remove('hidden');
+                        const modal = document.getElementById('deleteModal-' + userId);
+                        modal.classList.add('hidden');
+                    }
+                </script>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-4">There's nothing here yet!</div>
+    {% endif %}
+</div>
+
+</div>
+
+<div class="mt-4">
+    <nav>
+        <ul class="inline-flex -space-x-px">
+            {% if current_page > 1 %}
+                <li>
+                    <a href="{{ path('app_dashboard_games', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
+                </li>
+            {% else %}
+                <li>
+                    <span class="px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Previous</span>
+                </li>
+            {% endif %}
+            {% for page in 1..total_pages %}
+                <li>
+                    <a href="{{ path('app_dashboard_games', {page: page, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
+                </li>
+            {% endfor %}
+            {% if current_page < total_pages %}
+                <li>
+                    <a href="{{ path('app_dashboard_games', {page: current_page + 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
+                </li>
+            {% else %}
+                <li>
+                    <span class="px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Next</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Loading -->
+<script>
+    function showLoadingSpinner() {
+        document.getElementById('loading-spinner').style.display = 'flex';
+    }
+
+    window.addEventListener('pageshow', function() {
+        document.getElementById('loading-spinner').style.display = 'none';
+    });
+</script>
