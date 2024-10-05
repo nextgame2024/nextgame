@@ -88,7 +88,7 @@ class DashboardRegistrationController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function changeRegistrationStatus(
         int $id,
-        UserRepository $userRepository,
+        TeamsRepository $teamsRepository,
         EntityManagerInterface $entityManager,
         TournamentRegistrationRepository $tournamentRegistrationRepository
     ): Response {
@@ -97,11 +97,20 @@ class DashboardRegistrationController extends AbstractController
         if (!$registration) {
             throw $this->createNotFoundException('Registration not found');
         }
-        $status = $registration->getStatus() == 'Registered' ? 'Open' : 'Registered';
-        $registration->setStatus($status);
+        // $teamId = $registration->getTeam()->getId();
+        $team = $registration->getTeam();
+        // $updatedTeam = $teamsRepository->findBy(['name' => $id]);
+        $entityManager->remove($registration);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Tournament registration has been successfully registered.');
+        $idFound = $tournamentRegistrationRepository->findBy(['team' => $team]);
+        if (!isset($idFound) || empty($idFound) || $idFound === null) {
+            // I need to remove thhe record from teams table as well
+            $entityManager->remove($team);
+            $entityManager->flush();
+        }
+
+        $this->addFlash('success', 'Tournament registration has been successfully deleted.');
 
         return $this->redirectToRoute('app_dashboard_registration');
     }
@@ -122,6 +131,7 @@ class DashboardRegistrationController extends AbstractController
         $currentUser = $this->getUser();
         $currentLocation = $userProfile->findLocationsByUserId($currentUser->getId());
 
+        $updatedTeam = [];
         $tournamentId = $request->request->get('tournament_id');
         $players = $request->request->get('players');
         $getCurrentLocation = $currentLocation[0]->getLocation();
@@ -137,10 +147,10 @@ class DashboardRegistrationController extends AbstractController
         $tournament = $tournamentRepository->find($tournamentId);
 
         $getTeamId = $tournamentRegistrationRepository->findTeamByTorneoIdAndDivisionId($tournamentId, $getDiv->getId(), $players);
-        $getTeamName = $teamsNamesRepository->find($getTeamId);
         $team = $teamsRepository->find($getTeamId);
 
         if (!isset($team) || empty($team) || $team === null) {
+            $getTeamName = $teamsNamesRepository->find($getTeamId);
             $newTeam = new Teams();
             $newTeam->setTorneo($tournament);
             $newTeam->setName($getTeamName->getName());
@@ -148,9 +158,11 @@ class DashboardRegistrationController extends AbstractController
             $newTeam->setTeamNames($getTeamName);
             $entityManager->persist($newTeam);
             $entityManager->flush();
+            $newTeamsRepository = $teamsRepository->findBy(['team_names' => $getTeamId]);
+            $updatedTeam = $newTeamsRepository[0];
+        } else {
+            $updatedTeam = $team;
         }
-
-        $updatedTeam = $teamsRepository->findBy(['team_names' => $getTeamId]);
 
         if (!$tournamentId || !$userProfile || !$location) {
             $this->addFlash('danger', 'Invalid data provided.');
@@ -162,7 +174,7 @@ class DashboardRegistrationController extends AbstractController
         $registration->setUserProfile($userProfile);
         $registration->setLocation($getCurrentLocation);
         $registration->setStatus('Registered');
-        $registration->setTeam($updatedTeam[0]);
+        $registration->setTeam($updatedTeam);
         $entityManager->persist($registration);
         $entityManager->flush();
 

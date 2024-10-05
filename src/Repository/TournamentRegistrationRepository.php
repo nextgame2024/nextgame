@@ -211,7 +211,7 @@ class TournamentRegistrationRepository extends ServiceEntityRepository
                     ) THEN (
                         SELECT tn.id 
                         FROM teams_names tn
-                        WHERE tn.id NOT IN (SELECT t.id FROM teams t)
+                        WHERE tn.id NOT IN (SELECT t.team_names_id FROM teams t)
                         LIMIT 1
                     )
 
@@ -250,7 +250,7 @@ class TournamentRegistrationRepository extends ServiceEntityRepository
                     ELSE (
                         SELECT tn.id 
                         FROM teams_names tn
-                        WHERE tn.id NOT IN (SELECT t.id FROM teams t)
+                        WHERE tn.id NOT IN (SELECT t.team_names_id FROM teams t)
                         LIMIT 1
                     )
                 END AS team_id;

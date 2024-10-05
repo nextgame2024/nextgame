@@ -1,11 +1,11 @@
 {% embed 'shared/_tabs.html.twig' %}
     {% block tabs %}
-        {% embed 'shared/_tab.html.twig' with { route: 'app_micro_post' } %}
+        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard' } %}
             {% block content %}
                 Dashboard 
             {% endblock %}
             {% block path %}
-            {{ path('app_micro_post') }}
+            {{ path('app_dashboard') }}
             {% endblock %}
         {% endembed %}
 
@@ -44,15 +44,6 @@
             {{ path('app_dashboard_games') }}
             {% endblock %}
         {% endembed %}
-
-        {# {% embed 'shared/_tab.html.twig' with { route: 'app_micro_post_topliked', classes: 'ml-2' } %}
-            {% block content %}
-                 | Registration 
-            {% endblock %}
-            {% block path %}
-            {{ path('app_micro_post_topliked') }}
-            {% endblock %}
-        {% endembed %} #}
 
     {% endblock %}
 {% endembed %}
