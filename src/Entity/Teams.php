@@ -28,6 +28,9 @@ class Teams
     #[ORM\ManyToOne]
     private ?Divisions $division = null;
 
+    #[ORM\ManyToOne]
+    private ?TeamsNames $team_names = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +92,18 @@ class Teams
     public function setDivision(?Divisions $division): static
     {
         $this->division = $division;
+
+        return $this;
+    }
+
+    public function getTeamNames(): ?TeamsNames
+    {
+        return $this->team_names;
+    }
+
+    public function setTeamNames(?TeamsNames $team_names): static
+    {
+        $this->team_names = $team_names;
 
         return $this;
     }

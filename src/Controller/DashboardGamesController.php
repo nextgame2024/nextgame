@@ -5,40 +5,25 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\User;
 use App\Entity\Games;
-use App\Entity\Table;
-use App\Entity\Teams;
-use App\Entity\DaysOff;
-use App\Entity\Tournament;
 use App\Form\GameFormType;
-use App\Entity\TournamentType;
-use App\Form\UserExtraInfoType;
-use App\Form\TournamentFormType;
-use App\Repository\UserRepository;
 use App\Repository\GamesRepository;
 use App\Repository\TeamsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UserProfileRepository;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\TournamentRegistrationRepository;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class DashboardGamesController extends AbstractController
 {
-    // Games Section ------------------------------------------------
     #[Route('/dashboard/games', name: 'app_dashboard_games')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function dashboardGames(
         Request $request,
-        UserRepository $userRepository,
         GamesRepository $gamesRepository,
-        UserProfileRepository $userProfile,
-        TournamentRegistrationRepository $tournamentRegistration,
-        TeamsRepository $teamsRepository
+        UserProfileRepository $userProfile
     ): Response {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -75,15 +60,7 @@ class DashboardGamesController extends AbstractController
         $totalPages = ceil($totalItems / $limit);
 
         $payment = ['Yes', 'No'];
-        // foreach ($paginator as &$tournament) {
-        //     $teams = $teamsRepository->findTeamByUserTorneoId(
-        //         $tournament['tournament_id'],
-        //         $tournament['div_id']
-        //     );
 
-        //     $tournament['teams'] = $teams;
-        // }
-        // dd($paginator);
         return $this->render('dashboard/tournament_games.html.twig', [
             'tournament_games' => $paginator,
             'current_page' => $page,
@@ -163,7 +140,6 @@ class DashboardGamesController extends AbstractController
             throw $this->createNotFoundException('User not found.');
         }
 
-        // $game = new Games();
         $form = $this->createForm(GameFormType::class, $game, [
             'user_location' => $userLocation,
         ]);
@@ -182,5 +158,28 @@ class DashboardGamesController extends AbstractController
             'form' => $form->createView(),
             'isEdit' => true,
         ]);
+    }
+
+    #[Route('/dashboard/registration/payment-change/{id}', name: 'app_dashboard_payment_change', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function paymentChange(
+        int $id,
+        Request $request,
+        GamesRepository $gamesRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $payment = $gamesRepository->find($id);
+
+        if (!$payment) {
+            throw $this->createNotFoundException('Payment not found');
+        }
+
+        $is_paid = $request->request->get('new_team_id');
+        $payment->setIsPaid($is_paid);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Payment has been successfully updated!');
+
+        return $this->redirectToRoute('app_dashboard_games');
     }
 }

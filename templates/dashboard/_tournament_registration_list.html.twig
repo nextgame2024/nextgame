@@ -15,10 +15,10 @@
                 <option value="u.name" {{ search_by == 'u.name' ? 'selected' : '' }}>Name</option>
                 <option value="u.rating" {{ search_by == 'u.rating' ? 'selected' : '' }}>Rating</option>
                 <option value="d.name" {{ search_by == 'd.name' ? 'selected' : '' }}>Division</option>
-                <option value="tr.status" {{ search_by == 'tr.status' ? 'selected' : '' }}>Status</option>
+                {# <option value="tr.status" {{ search_by == 'tr.status' ? 'selected' : '' }}>Status</option> #}
             </select>
             <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="mt-2 sm:mt-0 sm:ml-2 w-full sm:w-80 border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
-            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-blue-500 text-white py-2 px-4 rounded h-10 hover:bg-blue-600" onclick="showLoadingSpinner()">Search</button>
+            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
         </form>
     </div>
     <div class="space-y-2">
@@ -26,8 +26,8 @@
         {% for registration in tournament_registration %}
             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-2 items-center">
-                    <div>
-                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[50px] w-[50px] rounded-full ring-2 ring-white dark:ring-gray" />
+                    <div class="h-[45px]">
+                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
                     </div>
                     <div>
                         <div class="font-semibold text-lg dark:text-white">{{ registration.tournament_type }}</div>
@@ -126,7 +126,7 @@
                         <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
                             <h2 class="text-lg font-semibold mb-4">Are you sure you want to change the team?</h2>
                             <p class="mb-6">Please verify that all teams have been properly formed.</p>
-                            <form method="post" action="{{ path('app_dashboard_change_team', {id: registration.tournament_registration_id}) }}" onsubmit="showLoadingSpinner('{{ registration.tournament_registration_id }}')">
+                            <form method="post" action="{{ path('app_dashboard_change_teams', {id: registration.tournament_registration_id}) }}" onsubmit="showLoadingSpinner('{{ registration.tournament_registration_id }}')">
                                 <input type="hidden" name="_token" value="{{ csrf_token('change-team' ~ registration.tournament_registration_id) }}">
                                 <input type="hidden" id="new_team_id-{{ registration.tournament_registration_id }}" name="new_team_id">
                                 <div class="flex justify-center">

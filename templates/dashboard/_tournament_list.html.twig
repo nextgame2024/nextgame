@@ -15,24 +15,26 @@
                 <option value="t.status" {{ search_by == 't.status' ? 'selected' : '' }}>Status</option>
             </select>
             <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="mt-2 sm:mt-0 sm:ml-2 w-full sm:w-80 border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
-            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-blue-500 text-white py-2 px-4 rounded h-10 hover:bg-blue-600" onclick="showLoadingSpinner()">Search</button>
+            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
         </form>
 
-        <a href="{{ path('app_dashboard_create_tournament') }}" class="mt-2 sm:mt-0 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onclick="showLoadingSpinner()">Create</a>
+        <a href="{{ path('app_dashboard_create_tournament') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600" onclick="showLoadingSpinner()">Create</a>
     </div>
     <div class="space-y-2">
     {% if tournament_registration|length > 0 %}
         {% for registration in tournament_registration %}
             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 items-center">
-                    <div class="col-span-1 lg:col-span-1">
-                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[50px] w-[50px] rounded-full ring-2 ring-white dark:ring-gray" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_14%_13%_13%_15%_13%_12%_8%] gap-3 items-center">
+                    <div class="h-[45px]">
+                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
                     </div>
-                    <div class="col-span-1 sm:col-span-1 lg:col-span-1">
+                    <div>
                         <div class="font-semibold text-lg dark:text-white">{{ registration.tournament_type }}</div>
+                    </div>
+                    <div>
                         <p><span class="font-medium">Location:</span> {{ registration.location | default('-') }}</p>
                     </div>
-                    <div class="col-span-1 sm:col-span-1 lg:col-span-1">
+                    <div>
                         <p><span class="font-medium">Hour:</span> 
                             {% if registration.hour %}
                                 {{ registration.hour|date('h:i a') }}
@@ -40,9 +42,11 @@
                                 -
                             {% endif %}
                         </p>
+                    </div>
+                    <div>
                         <p><span class="font-medium">Status:</span> {{ registration.status | default('-') }}</p>
                     </div>
-                    <div class="col-span-1 sm:col-span-1 lg:col-span-1">
+                    <div>
                         <p><span class="font-medium">Start:</span>
                             {% if registration.start_day %}
                                 {{ registration.start_day|date('Y-m-d') | default('-') }}
@@ -50,6 +54,8 @@
                                 -
                             {% endif %}
                         </p>
+                    </div>
+                    <div>
                         <p><span class="font-medium">End:</span>
                             {% if registration.end_day %}
                                 {{ registration.end_day|date('Y-m-d') | default('-') }}
@@ -67,6 +73,15 @@
                                 </button>
                                 <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
                                     Registered
+                                </div>
+                            </div>
+                        {% elseif registration.status != 'Open' %}
+                            <div class="relative group">
+                                <button type="button" class="text-gray-400 text-2xl" data-modal-target="registrationModal-{{ registration.id }}" disabled>
+                                    <i class="fa-duotone fa-solid fa-user-check"></i>
+                                </button>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                    Closed
                                 </div>
                             </div>
                         {% else %}

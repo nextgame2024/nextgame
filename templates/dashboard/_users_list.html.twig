@@ -17,25 +17,29 @@
                 <option value="d.name" {{ search_by == 'd.name' ? 'selected' : '' }}>Division</option>
             </select>
             <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="mt-2 sm:mt-0 sm:ml-2 w-full sm:w-80 border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
-            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-blue-500 text-white py-2 px-4 rounded h-10 hover:bg-blue-600" onclick="showLoadingSpinner()">Search</button>
+            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
         </form>
 
-        <a href="{{ path('app_dashboard_user') }}" class="mt-2 sm:mt-0 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onclick="showLoadingSpinner()">Create</a>
+        <a href="{{ path('app_dashboard_user') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600" onclick="showLoadingSpinner()">Create</a>
     </div>
     <div class="space-y-2">
     {% if users|length > 0 %}
         {% for user in users %}
            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 items-center">
-                    <div>
-                        <img src="{{ profiles ~ 'generalAvatar.jpeg' }}" class="inline-block h-[50px] w-[50px] rounded-full ring-2 ring-white dark:ring-gray" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_14%_13%_13%_15%_13%_12%_8%] gap-3 items-center">
+                    <div class="h-[45px]">
+                        <img src="{{ profiles ~ 'generalAvatar.jpeg' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
                     </div>
                     <div>
                         <div class="font-semibold text-lg dark:text-white">{{ user.email }}</div>
+                    </div>
+                    <div>
                         <p><span class="font-medium">Name:</span> {{ user.userProfile.name | default('-') }}</p>
                     </div>
                     <div>
                         <p><span class="font-medium">Phone:</span> {{ user.userProfile.phone | default('-') }}</p>
+                    </div>
+                     <div>
                         <p><span class="font-medium">DoB:</span> 
                             {% if user.userProfile %}
                                 {{ user.userProfile.dateOfBirth|date('Y-m-d') | default('-') }}
@@ -46,23 +50,21 @@
                     </div>
                     <div>
                         <p><span class="font-medium">Rating:</span> {{ user.userProfile.rating | default('-') }}</p>
+                    </div>
+                    <div>
                         <p><span class="font-medium">Division:</span> {{ user.userProfile.division.name | default('-') }}</p>
                     </div>
                     <div class="flex items-center space-x-3 justify-end">
-                        <!-- Edit button with tooltip -->
-                        <a href="{{ path('app_dashboard_user_edit', {id: user.id}) }}" class="text-blue-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                        <a href="{{ path('app_dashboard_user_edit', {id: user.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
                             <i class="fas fa-pencil-alt"></i>
-                            <!-- Tooltip for edit -->
                             <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
                                 style="left: 50%; transform: translateX(-50%) translateX(-3px);">
                                 Edit
                             </div>
                         </a>
 
-                        <!-- Delete button with tooltip -->
                         <button type="button" class="text-red-500 text-2xl relative group" data-modal-target="deleteModal-{{ user.id }}">
                             <i class="fas fa-trash-alt"></i>
-                            <!-- Tooltip for delete -->
                             <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
                                 style="left: 50%; transform: translateX(-50%) translateX(-3px);">
                                 Delete
