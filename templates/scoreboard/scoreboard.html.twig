@@ -1,0 +1,41 @@
+{% extends 'dashboardBase.html.twig' %}
+
+{% block body %}
+<div class="grid grid-cols-2 h-screen">
+  <div class="relative bg-black border-4 border-yellow-500">
+    <div class="absolute top-0 right-0 w-[18%] h-[23%] bg-yellow-500 flex items-center justify-center text-white border-4 border-black">
+      <span class="text-[10rem] text-black font-bold" id="setPlayerOne">{{ setPlayerOne }}</span>
+    </div>
+    <div class="h-full flex items-center justify-center">
+      <span class="text-[38rem] text-yellow-500 font-bold" id="playerOne">{{ playerOne }}</span>
+    </div>
+  </div>
+
+  <div class="relative bg-black border-4 border-yellow-500">
+    <div class="absolute top-0 left-0 w-[18%] h-[23%] bg-yellow-500 flex items-center justify-center text-white border-4 border-black">
+      <span class="text-[10rem] text-black font-bold" id="setPlayerTwo">{{ setPlayerTwo }}</span>
+    </div>
+    <div class="h-full flex items-center justify-center">
+      <span class="text-[38rem] text-yellow-500 font-bold" id="playerTwo">{{ playerTwo }}</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const gameId = {{ id }};
+  setInterval(() => {
+    fetch(`/scoreboard/update/${gameId}`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('setPlayerOne').textContent = data.setPlayerOne;
+        document.getElementById('playerOne').textContent = data.playerOne;
+        document.getElementById('setPlayerTwo').textContent = data.setPlayerTwo;
+        document.getElementById('playerTwo').textContent = data.playerTwo;
+      })
+      .catch(error => console.error('Error fetching scoreboard:', error));
+  }, 3000);
+</script>
+{% endblock %}
+
+
+

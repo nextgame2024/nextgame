@@ -1,0 +1,97 @@
+{% extends 'dashboardBase.html.twig' %}
+
+{% block body %}
+<div class="grid grid-cols-2 h-screen">
+  <div class="relative bg-black border-4 border-yellow-500">
+    <div class="absolute top-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+      <a href="{{ path('app_dashboard') }}">
+        <div class="mb-2 text-yellow-500 text-2xl text-center">Go to the</div>
+        <img src="{{ profiles ~ 'NextGame.png' }}" class="inline-block" />
+      </a>
+    </div>
+    <div class="absolute top-0 right-0 w-[18%] h-[23%] bg-yellow-500 flex items-center justify-center text-white border-4 border-black">
+      <span class="text-[10rem] text-black font-bold" id="setPlayerOne">{{ setPlayerOne }}</span>
+    </div>
+    <div class="absolute bottom-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+      <a href="{{ path('app_scoreboard_subtract_score', {id: id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+        <div class="flex items-center">
+          <span class="text-[10rem] text-yellow-500 font-bold" id="setPlayerFour1">-</span>
+        </div>
+      </a>
+    </div>
+    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[45%] h-[15%] bg-black flex items-center justify-center text-white border-4 border-black">
+      <a href="{{ path('app_scoreboard', {id: id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+        <div class="flex items-center">
+          <span class="text-2xl text-yellow-500 font-bold" id="setPlayerFour1">{{ playerOneName }}</span>
+          <i class="fa-solid fa-circle-right ml-3 text-5xl"></i>
+        </div>
+      </a>
+    </div>
+    <div class="absolute bottom-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+      <a href="{{ path('add_score_player', {id: id, playerId: playerIdOne}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+        <div class="flex items-center">
+          <span class="text-[10rem] text-yellow-500 font-bold" id="setPlayerFour1">+</span>
+        </div>
+      </a>
+    </div>
+    <div class="h-full flex items-center justify-center">
+      <span class="text-[38rem] text-yellow-500 font-bold" id="playerOne">{{ pointsPlayerOne }}</span>
+    </div>
+  </div>
+
+  <div class="relative bg-black border-4 border-yellow-500">
+      <div class="absolute top-0 left-0 w-[18%] h-[23%] bg-yellow-500 flex items-center justify-center text-white border-4 border-black">
+        <span class="text-[10rem] text-black font-bold" id="setPlayerOne">{{ setPlayerOne }}</span>
+      </div>
+      
+      <div class="absolute top-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+        <a href="{{ path('app_scoreboard', {id: playerIdOne}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+          <div class="mb-3">Finish set</div>
+          <i class="fa-solid fa-circle-check text-7xl ml-3"></i>
+        </a>
+      </div>
+
+      <div class="absolute bottom-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+        <a href="{{ path('app_scoreboard', {id: playerIdTwo}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+          <div class="flex items-center">
+            <span class="text-[10rem] text-yellow-500 font-bold" id="setPlayerFour1">-</span>
+          </div>
+        </a>
+      </div>
+          <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[45%] h-[15%] bg-black flex items-center justify-center text-white border-4 border-black">
+      <a href="{{ path('app_scoreboard', {id: playerIdTwo}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+        <div class="flex items-center">
+          <i class="fa-solid fa-circle-left mr-3 text-5xl"></i>
+          <span class="text-2xl text-yellow-500 font-bold" id="setPlayerFour1">{{ playerTwoName }}</span>
+        </div>
+      </a>
+    </div>
+      <div class="absolute bottom-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+        <a href="{{ path('add_score_player', {id: id, playerId: playerIdTwo}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+          <div class="flex items-center">
+            <span class="text-[10rem] text-yellow-500 font-bold" id="setPlayerFour1">+</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="h-full flex items-center justify-center">
+        <span class="text-[38rem] text-yellow-500 font-bold" id="playerTwo">{{ pointsPlayerTwo }}</span>
+      </div>
+  </div>
+</div>
+
+{# <script>
+  const gameId = {{ id }};
+  setInterval(() => {
+    fetch(`/scoreboard/update/${gameId}`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('setPlayerOne').textContent = data.setPlayerOne;
+        document.getElementById('playerOne').textContent = data.playerOne;
+        document.getElementById('setPlayerTwo').textContent = data.setPlayerTwo;
+        document.getElementById('playerTwo').textContent = data.playerTwo;
+      })
+      .catch(error => console.error('Error fetching scoreboard:', error));
+  }, 1000);
+</script> #}
+{% endblock %}

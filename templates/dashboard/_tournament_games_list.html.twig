@@ -32,7 +32,7 @@
     {% if tournament_games|length > 0 %}
         {% for games in tournament_games %}
             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[3%_10%_8%_8%_9%_9%_14%_14%_12%_6%] gap-3 items-center">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[3%_9%_8%_8%_8%_8%_14%_14%_10%_12%] gap-3 items-center">
                     <div class="h-[45px]">
                         <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
                     </div>
@@ -93,14 +93,6 @@
                                 {% endfor %}
                             </select>
                         </div>
-
-                        <a href="{{ path('app_dashboard_edit_game', {id: games.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-                            <i class="fas fa-pencil-alt"></i>
-                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
-                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
-                                Edit
-                            </div>
-                        </a>
                         
                         {% if games.status == 'Open' %}
                             <button type="button" class="text-yellow-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.id }}">
@@ -119,6 +111,31 @@
                                 </div>
                             </button>
                         {% endif %}
+
+                            <a href="{{ path('app_dashboard_edit_game', {id: games.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                                <i class="fas fa-pencil-alt"></i>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                    style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                    Edit
+                                </div>
+                            </a>
+
+                        <a href="{{ path('app_scoreboard', {id: games.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                            <i class="fa-solid fa-clapperboard"></i>
+                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                Scoreboard
+                            </div>
+                        </a>
+
+                        <a href="{{ path('app_umpire', {id: games.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                Umpire
+                            </div>
+                        </a>
+
                     </div>
                 </div>
 

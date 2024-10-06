@@ -105,6 +105,9 @@ class Games
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $is_paid = null;
 
+    #[ORM\Column(length: 5, nullable: true)]
+    private ?string $current_set = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -454,6 +457,18 @@ class Games
     public function setIsPaid(?string $is_paid): static
     {
         $this->is_paid = $is_paid;
+
+        return $this;
+    }
+
+    public function getCurrentSet(): ?string
+    {
+        return $this->current_set;
+    }
+
+    public function setCurrentSet(?string $current_set): static
+    {
+        $this->current_set = $current_set;
 
         return $this;
     }
