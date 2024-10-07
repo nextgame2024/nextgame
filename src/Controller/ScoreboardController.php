@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Games;
-use App\Repository\GamesRepository;
+use Twig\Environment;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -16,108 +19,206 @@ class ScoreboardController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function scoreboard(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        CacheInterface $cache,
+        Request $request
     ): Response {
-        $game = $entityManager->getRepository(Games::class)->find($id);
+        $cacheKey = 'game_scoreboard_' . $id;
 
-        if (!$game) {
-            throw $this->createNotFoundException('Game not found.');
+        $gameData = $cache->get($cacheKey, function (ItemInterface $item) use ($id, $entityManager) {
+            $item->expiresAfter(2);
+            $game = $entityManager->getRepository(Games::class)->find($id);
+
+            if (!$game) {
+                throw $this->createNotFoundException('Game not found.');
+            }
+
+            $current_set = $game->getCurrentSet();
+            $setPlayerOne = $game->getSetsTeamOne();
+            $setPlayerTwo = $game->getSetsTeamTwo();
+            $playerOneName = $game->getPlayerOne()->getName();
+            $playerTwoName = $game->getPlayerTwo()->getName();
+
+            switch ($current_set) {
+                case 1:
+                    $playerOne = $game->getPlayerOneSet1();
+                    $playerTwo = $game->getPlayerTwoSet1();
+                    break;
+                case 2:
+                    $playerOne = $game->getPlayerOneSet2();
+                    $playerTwo = $game->getPlayerTwoSet2();
+                    break;
+                case 3:
+                    $playerOne = $game->getPlayerOneSet3();
+                    $playerTwo = $game->getPlayerTwoSet3();
+                    break;
+                case 4:
+                    $playerOne = $game->getPlayerOneSet4();
+                    $playerTwo = $game->getPlayerTwoSet4();
+                    break;
+                case 5:
+                    $playerOne = $game->getPlayerOneSet5();
+                    $playerTwo = $game->getPlayerTwoSet5();
+                    break;
+                default:
+                    $playerOne = 0;
+                    $playerTwo = 0;
+            }
+
+            return [
+                'playerOne' => $playerOne,
+                'playerTwo' => $playerTwo,
+                'current_set' => $current_set,
+                'setPlayerOne' => $setPlayerOne,
+                'setPlayerTwo' => $setPlayerTwo,
+                'playerOneName' => $playerOneName,
+                'playerTwoName' => $playerTwoName,
+                'display' => $game->getDisplay(),
+                'id' => $id,
+            ];
+        });
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->json($gameData);
         }
 
-        $current_set = $game->getCurrentSet();
-        $setPlayerOne = $game->getSetsTeamOne();
-        $setPlayerTwo = $game->getSetsTeamTwo();
-
-        switch ($current_set) {
-            case 1:
-                $playerOne = $game->getPlayerOneSet1();
-                $playerTwo = $game->getPlayerTwoSet1();
-                break;
-            case 2:
-                $playerOne = $game->getPlayerOneSet2();
-                $playerTwo = $game->getPlayerTwoSet2();
-                break;
-            case 3:
-                $playerOne = $game->getPlayerOneSet3();
-                $playerTwo = $game->getPlayerTwoSet3();
-                break;
-            case 4:
-                $playerOne = $game->getPlayerOneSet4();
-                $playerTwo = $game->getPlayerTwoSet4();
-                break;
-            case 5:
-                $playerOne = $game->getPlayerOneSet5();
-                $playerTwo = $game->getPlayerTwoSet5();
-                break;
-            default:
-                throw $this->createNotFoundException('Invalid current set.');
-        }
-
-        return $this->render('scoreboard/scoreboard.html.twig', [
-            'playerOne' => $playerOne,
-            'playerTwo' => $playerTwo,
-            'current_set' => $current_set,
-            'setPlayerOne' => $setPlayerOne,
-            'setPlayerTwo' => $setPlayerTwo,
-            'id' => $id,
-        ]);
+        return $this->render('scoreboard/scoreboard.html.twig', array_merge($gameData, [
+            'id' => $id
+        ]));
     }
 
-    #[Route('/scoreboard/update/{id}', name: 'app_scoreboard_update')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function updateScoreboard(
-        int $id,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $game = $entityManager->getRepository(Games::class)->find($id);
 
-        if (!$game) {
-            throw $this->createNotFoundException('Game not found.');
-        }
+    // #[Route('/scoreboard/{id}', name: 'app_scoreboard')]
+    // #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    // public function scoreboard(
+    //     int $id,
+    //     EntityManagerInterface $entityManager,
+    //     CacheInterface $cache
+    // ): Response {
+    //     $cacheKey = 'game_scoreboard_' . $id;
 
-        $current_set = $game->getCurrentSet();
-        $setPlayerOne = $game->getSetsTeamOne();
-        $setPlayerTwo = $game->getSetsTeamTwo();
+    //     $gameData = $cache->get($cacheKey, function (ItemInterface $item) use ($id, $entityManager) {
+    //         $item->expiresAfter(30);
+    //         $game = $entityManager->getRepository(Games::class)->find($id);
 
-        switch ($current_set) {
-            case 1:
-                $playerOne = $game->getPlayerOneSet1();
-                $playerTwo = $game->getPlayerTwoSet1();
-                break;
-            case 2:
-                $playerOne = $game->getPlayerOneSet2();
-                $playerTwo = $game->getPlayerTwoSet2();
-                break;
-            case 3:
-                $playerOne = $game->getPlayerOneSet3();
-                $playerTwo = $game->getPlayerTwoSet3();
-                break;
-            case 4:
-                $playerOne = $game->getPlayerOneSet4();
-                $playerTwo = $game->getPlayerTwoSet4();
-                break;
-            case 5:
-                $playerOne = $game->getPlayerOneSet5();
-                $playerTwo = $game->getPlayerTwoSet5();
-                break;
-            default:
-                throw $this->createNotFoundException('Invalid current set.');
-        }
+    //         if (!$game) {
+    //             throw $this->createNotFoundException('Game not found.');
+    //         }
 
-        return $this->json([
-            'playerOne' => $playerOne,
-            'playerTwo' => $playerTwo,
-            'setPlayerOne' => $setPlayerOne,
-            'setPlayerTwo' => $setPlayerTwo,
-            'current_set' => $current_set,
-            'id' => $id,
-        ]);
-    }
+    //         $current_set = $game->getCurrentSet();
+    //         $setPlayerOne = $game->getSetsTeamOne();
+    //         $setPlayerTwo = $game->getSetsTeamTwo();
+    //         $playerOneName = $game->getPlayerOne()->getName();
+    //         $playerTwoName = $game->getPlayerTwo()->getName();
 
-    #[Route('/umpire/{id}', name: 'app_umpire')]
+    //         switch ($current_set) {
+    //             case 1:
+    //                 $playerOne = $game->getPlayerOneSet1();
+    //                 $playerTwo = $game->getPlayerTwoSet1();
+    //                 break;
+    //             case 2:
+    //                 $playerOne = $game->getPlayerOneSet2();
+    //                 $playerTwo = $game->getPlayerTwoSet2();
+    //                 break;
+    //             case 3:
+    //                 $playerOne = $game->getPlayerOneSet3();
+    //                 $playerTwo = $game->getPlayerTwoSet3();
+    //                 break;
+    //             case 4:
+    //                 $playerOne = $game->getPlayerOneSet4();
+    //                 $playerTwo = $game->getPlayerTwoSet4();
+    //                 break;
+    //             case 5:
+    //                 $playerOne = $game->getPlayerOneSet5();
+    //                 $playerTwo = $game->getPlayerTwoSet5();
+    //                 break;
+    //             default:
+    //                 $playerOne = 0;
+    //                 $playerTwo = 0;
+    //         }
+
+    //         return [
+    //             'playerOne' => $playerOne,
+    //             'playerTwo' => $playerTwo,
+    //             'current_set' => $current_set,
+    //             'setPlayerOne' => $setPlayerOne,
+    //             'setPlayerTwo' => $setPlayerTwo,
+    //             'current_set' => $current_set,
+    //             'playerOneName' => $playerOneName,
+    //             'playerTwoName' => $playerTwoName,
+    //             'display' => $game->getDisplay(),
+    //             'id' => $id,
+    //         ];
+    //     });
+
+    //     return $this->render('scoreboard/scoreboard.html.twig', array_merge($gameData, [
+    //         'id' => $id
+    //     ]));
+    // }
+
+    // #[Route('/scoreboard/update/{id}', name: 'app_scoreboard_update')]
+    // #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    // public function updateScoreboard(
+    //     int $id,
+    //     EntityManagerInterface $entityManager,
+    //     CacheInterface $cache
+    // ): Response {
+    //     $cacheKey = 'game_scoreboard_' . $id;
+    //     $data = $cache->get($cacheKey, function () use ($id, $entityManager) {
+    //         $game = $entityManager->getRepository(Games::class)->find($id);
+    //         dd($game->getDisplay());
+    //         if (!$game) {
+    //             throw $this->createNotFoundException('Game not found.');
+    //         }
+
+    //         $current_set = $game->getCurrentSet();
+    //         $setPlayerOne = $game->getSetsTeamOne();
+    //         $setPlayerTwo = $game->getSetsTeamTwo();
+
+    //         switch ($current_set) {
+    //             case 1:
+    //                 $playerOne = $game->getPlayerOneSet1();
+    //                 $playerTwo = $game->getPlayerTwoSet1();
+    //                 break;
+    //             case 2:
+    //                 $playerOne = $game->getPlayerOneSet2();
+    //                 $playerTwo = $game->getPlayerTwoSet2();
+    //                 break;
+    //             case 3:
+    //                 $playerOne = $game->getPlayerOneSet3();
+    //                 $playerTwo = $game->getPlayerTwoSet3();
+    //                 break;
+    //             case 4:
+    //                 $playerOne = $game->getPlayerOneSet4();
+    //                 $playerTwo = $game->getPlayerTwoSet4();
+    //                 break;
+    //             case 5:
+    //                 $playerOne = $game->getPlayerOneSet5();
+    //                 $playerTwo = $game->getPlayerTwoSet5();
+    //                 break;
+    //             default:
+    //                 throw $this->createNotFoundException('Invalid current set.');
+    //         }
+
+    //         return [
+    //             'playerOne' => $playerOne,
+    //             'playerTwo' => $playerTwo,
+    //             'setPlayerOne' => $setPlayerOne,
+    //             'setPlayerTwo' => $setPlayerTwo,
+    //             'current_set' => $current_set,
+    //             'display' => $game->getDisplay(),
+    //             'id' => $id,
+    //         ];
+    //     });
+
+    //     return $this->json($data);
+    // }
+
+    #[Route('/umpire/{id}/{display}', name: 'app_umpire')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function umpireboard(
         int $id,
+        int $display,
         EntityManagerInterface $entityManager
     ): Response {
         $game = $entityManager->getRepository(Games::class)->find($id);
@@ -133,7 +234,7 @@ class ScoreboardController extends AbstractController
         $playerIdTwo = $game->getPlayerTwo()->getId();
         $playerOneName = $game->getPlayerOne()->getName();
         $playerTwoName = $game->getPlayerTwo()->getName();
-        // dd($playerIdOne);
+        $game->setDisplay($display);
 
         switch ($current_set) {
             case 1:
@@ -157,10 +258,11 @@ class ScoreboardController extends AbstractController
                 $playerTwo = $game->getPlayerTwoSet5();
                 break;
             default:
-                throw $this->createNotFoundException('Invalid current set.');
+                $playerOne = 0;
+                $playerTwo = 0;
         }
+        $entityManager->flush();
 
-        // dd($playerOne);
         return $this->render('scoreboard/umpire.html.twig', [
             'playerIdOne' => $playerIdOne,
             'playerIdTwo' => $playerIdTwo,
@@ -171,26 +273,22 @@ class ScoreboardController extends AbstractController
             'setPlayerTwo' => $setPlayerTwo,
             'playerOneName' => $playerOneName,
             'playerTwoName' => $playerTwoName,
+            'display' => $display,
             'id' => $id,
         ]);
     }
 
-    #[Route('/scoreboard/add-score-player/{id}/{playerId}', name: 'add_score_player')]
+    #[Route('/scoreboard/add-score-player/{id}/{playerId}', name: 'app_add_score_player')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function addScore(
         int $id,
         int $playerId,
-        // Request $request,
         EntityManagerInterface $entityManager,
-        // UserProfileRepository $userProfile
+        CacheInterface $cache,
     ): Response {
-        /** @var User $currentUser */
-        $currentUser = $this->getUser();
-        // $currentLocation = $userProfile->findLocationsByUserId($currentUser->getId());
-        // $userLocation = $currentLocation[0]->getLocation() ?? null;
-
+        $playerOnePoints = 0;
+        $playerTwoPoints = 0;
         $game = $entityManager->getRepository(Games::class)->find($id);
-        // $game = $gamesRepository->findBy(['player_one' => $id]);
         $playerOneId = $game->getPlayerOne()->getId();
         $playerTwoId = $game->getPlayerTwo()->getId();
 
@@ -198,81 +296,341 @@ class ScoreboardController extends AbstractController
             switch ($game->getCurrentSet()) {
                 case 1:
                     $playerOnePoints = $game->getPlayerOneSet1() + 1;
-                    $game->setPlayerOneSet1($playerOnePoints);
-                    // dd($playerOnePoints);
+                    if ($playerOnePoints <= 99) {
+                        $game->setPlayerOneSet1($playerOnePoints);
+                        $playerTwoPoints = $game->getPlayerTwoSet1();
+                    }
                     break;
                 case 2:
-                    // $playerOne = $game->getPlayerOneSet2();
-                    // $playerTwo = $game->getPlayerTwoSet2();
+                    $playerOnePoints = $game->getPlayerOneSet2() + 1;
+                    if ($playerOnePoints <= 99) {
+                        $game->setPlayerOneSet2($playerOnePoints);
+                        $playerTwoPoints = $game->getPlayerTwoSet2();
+                    }
                     break;
                 case 3:
-                    // $playerOne = $game->getPlayerOneSet3();
-                    // $playerTwo = $game->getPlayerTwoSet3();
+                    $playerOnePoints = $game->getPlayerOneSet3() + 1;
+                    if ($playerOnePoints <= 99) {
+                        $game->setPlayerOneSet3($playerOnePoints);
+                        $playerTwoPoints = $game->getPlayerTwoSet3();
+                    }
                     break;
                 case 4:
-                    // $playerOne = $game->getPlayerOneSet4();
-                    // $playerTwo = $game->getPlayerTwoSet4();
+                    $playerOnePoints = $game->getPlayerOneSet4() + 1;
+                    if ($playerOnePoints <= 99) {
+                        $game->setPlayerOneSet4($playerOnePoints);
+                        $playerTwoPoints = $game->getPlayerTwoSet4();
+                    }
                     break;
                 case 5:
-                    // $playerOne = $game->getPlayerOneSet5();
-                    // $playerTwo = $game->getPlayerTwoSet5();
+                    $playerOnePoints = $game->getPlayerOneSet5() + 1;
+                    if ($playerOnePoints <= 99) {
+                        $game->setPlayerOneSet5($playerOnePoints);
+                        $playerTwoPoints = $game->getPlayerTwoSet5();
+                    }
                     break;
                 default:
-                    throw $this->createNotFoundException('Invalid current set.');
+                    $playerOnePoints = 0;
+                    $playerTwoPoints = 0;
             }
         }
         if ($playerId == $playerTwoId) {
-            dd($playerTwoId);
+            switch ($game->getCurrentSet()) {
+                case 1:
+                    $playerTwoPoints = $game->getPlayerTwoSet1() + 1;
+                    if ($playerTwoPoints <= 99) {
+                        $game->setPlayerTwoSet1($playerTwoPoints);
+                        $playerOnePoints = $game->getPlayerOneSet1();
+                    }
+                    break;
+                case 2:
+                    $playerTwoPoints = $game->getPlayerTwoSet2() + 1;
+                    if ($playerTwoPoints <= 99) {
+                        $game->setPlayerTwoSet2($playerTwoPoints);
+                        $playerOnePoints = $game->getPlayerOneSet2();
+                    }
+                    break;
+                case 3:
+                    $playerTwoPoints = $game->getPlayerTwoSet3() + 1;
+                    if ($playerTwoPoints <= 99) {
+                        $game->setPlayerTwoSet3($playerTwoPoints);
+                        $playerOnePoints = $game->getPlayerOneSet3();
+                    }
+                    break;
+                case 4:
+                    $playerTwoPoints = $game->getPlayerTwoSet4() + 1;
+                    if ($playerTwoPoints <= 99) {
+                        $game->setPlayerTwoSet4($playerTwoPoints);
+                        $playerOnePoints = $game->getPlayerOneSet4();
+                    }
+                    break;
+                case 5:
+                    $playerTwoPoints = $game->getPlayerTwoSet5() + 1;
+                    if ($playerTwoPoints <= 99) {
+                        $game->setPlayerTwoSet5($playerTwoPoints);
+                        $playerOnePoints = $game->getPlayerOneSet5();
+                    }
+                    break;
+                default:
+                    $playerOnePoints = 0;
+                    $playerTwoPoints = 0;
+            }
         }
 
         $entityManager->flush();
+        $cache->delete('game_scoreboard_' . $id);
 
-        return $this->redirectToRoute('app_umpire', ['id' => $id]);
-        // return $this->render('scoreboard/scoreboard.html.twig', [
-        //     // 'form' => $form->createView(),
-        //     'isEdit' => true,
-        // ]);
+        return $this->json([
+            'playerOnePoints' => $playerOnePoints,
+            'playerTwoPoints' => $playerTwoPoints,
+            'currentSet' => $game->getCurrentSet(),
+            'id' => $id,
+        ]);
     }
 
-    #[Route('/scoreboard/subtractScore/{id}', name: 'app_scoreboard_subtract_score')]
+    #[Route('/scoreboard/subtract-score/{id}/{playerId}', name: 'app_scoreboard_subtract_score')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function subtractScore(
         int $id,
-        // Request $request,
+        int $playerId,
         EntityManagerInterface $entityManager,
-        GamesRepository $gamesRepository,
-        // UserProfileRepository $userProfile
+        CacheInterface $cache,
     ): Response {
-        /** @var User $currentUser */
-        $currentUser = $this->getUser();
-        // $currentLocation = $userProfile->findLocationsByUserId($currentUser->getId());
-        // $userLocation = $currentLocation[0]->getLocation() ?? null;
+        $playerOnePoints = 0;
+        $playerTwoPoints = 0;
+        $game = $entityManager->getRepository(Games::class)->find($id);
+        $playerOneId = $game->getPlayerOne()->getId();
+        $playerTwoId = $game->getPlayerTwo()->getId();
 
-        // $game = $entityManager->getRepository(Games::class)->find($id);
-        $game = $gamesRepository->findBy(['play_one_id' => $id]);
-        dd($game);
+        if ($playerId == $playerOneId) {
+            switch ($game->getCurrentSet()) {
+                case 1:
+                    $playerTwoPoints = $game->getPlayerTwoSet1();
+                    $playerOnePoints = $game->getPlayerOneSet1();
+                    if ($playerOnePoints == 0) {
+                        $playerOnePoints = $game->getPlayerOneSet1();
+                    }
+                    if ($playerOnePoints > 0) {
+                        $playerOnePoints = $game->getPlayerOneSet1() - 1;
+                        $game->setPlayerOneSet1($playerOnePoints);
+                    }
+                    break;
+                case 2:
+                    $playerTwoPoints = $game->getPlayerTwoSet2();
+                    $playerOnePoints = $game->getPlayerOneSet2();
+                    if ($playerOnePoints == 0) {
+                        $playerOnePoints = $game->getPlayerOneSet2();
+                    }
+                    if ($playerOnePoints > 0) {
+                        $playerOnePoints = $game->getPlayerOneSet2() - 1;
+                        $game->setPlayerOneSet2($playerOnePoints);
+                    }
+                    break;
+                case 3:
+                    $playerTwoPoints = $game->getPlayerTwoSet3();
+                    $playerOnePoints = $game->getPlayerOneSet3();
+                    if ($playerOnePoints == 0) {
+                        $playerOnePoints = $game->getPlayerOneSet3();
+                    }
+                    if ($playerOnePoints > 0) {
+                        $playerOnePoints = $game->getPlayerOneSet3() - 1;
+                        $game->setPlayerOneSet3($playerOnePoints);
+                    }
+                    break;
+                case 4:
+                    $playerTwoPoints = $game->getPlayerTwoSet4();
+                    $playerOnePoints = $game->getPlayerOneSet4();
+                    if ($playerOnePoints == 0) {
+                        $playerOnePoints = $game->getPlayerOneSet4() - 1;
+                    }
+                    if ($playerOnePoints > 0) {
+                        $playerOnePoints = $game->getPlayerOneSet4() - 1;
+                        $game->setPlayerOneSet4($playerOnePoints);
+                    }
+                    break;
+                case 5:
+                    $playerTwoPoints = $game->getPlayerTwoSet5();
+                    $playerOnePoints = $game->getPlayerOneSet5();
+                    if ($playerOnePoints == 0) {
+                        $playerOnePoints = $game->getPlayerOneSet5();
+                    }
+                    if ($playerOnePoints > 0) {
+                        $playerOnePoints = $game->getPlayerOneSet5() - 1;
+                        $game->setPlayerOneSet5($playerOnePoints);
+                    }
+                    break;
+                default:
+                    $playerOnePoints = 0;
+                    $playerTwoPoints = 0;
+            }
+        }
+        if ($playerId == $playerTwoId) {
+            switch ($game->getCurrentSet()) {
+                case 1:
+                    $playerOnePoints = $game->getPlayerOneSet1();
+                    $playerTwoPoints = $game->getPlayerTwoSet1();
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet1();
+                    }
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet1() - 1;
+                        $game->setPlayerTwoSet1($playerTwoPoints);
+                    }
+                    break;
+                case 2:
+                    $playerOnePoints = $game->getPlayerOneSet2();
+                    $playerTwoPoints = $game->getPlayerTwoSet2();
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet2();
+                    }
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet2() - 1;
+                        $game->setPlayerTwoSet2($playerTwoPoints);
+                    }
+                    break;
+                case 3:
+                    $playerOnePoints = $game->getPlayerOneSet3();
+                    $playerTwoPoints = $game->getPlayerTwoSet3();
+                    if ($playerTwoPoints == 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet3();
+                    }
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet3() - 1;
+                        $game->setPlayerTwoSet3($playerTwoPoints);
+                    }
+                    break;
+                case 4:
+                    $playerOnePoints = $game->getPlayerOneSet4();
+                    $playerTwoPoints = $game->getPlayerTwoSet4();
+                    if ($playerTwoPoints == 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet4();
+                    }
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet4() - 1;
+                        $game->setPlayerTwoSet4($playerTwoPoints);
+                    }
+                    break;
+                case 5:
+                    $playerOnePoints = $game->getPlayerOneSet5();
+                    $playerTwoPoints = $game->getPlayerTwoSet5();
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet5();
+                    }
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet5() - 1;
+                        $game->setPlayerTwoSet5($playerTwoPoints);
+                    }
+                    break;
+                default:
+                    $playerOnePoints = 0;
+                    $playerTwoPoints = 0;
+            }
+        }
 
-        // if (!$game) {
-        //     throw $this->createNotFoundException('User not found.');
-        // }
+        $entityManager->flush();
+        $cache->delete('game_scoreboard_' . $id);
 
-        // $form = $this->createForm(GameFormType::class, $game, [
-        //     'user_location' => $userLocation,
-        // ]);
-        // $form->handleRequest($request);
-
-        // if ($form->isSubmitted() && $form->isValid()) {
-        //     $entityManager->persist($game);
-        //     $entityManager->flush();
-
-        //     $this->addFlash('success', 'The game has been successfully updated!');
-
-        //     return $this->redirectToRoute('app_dashboard_games');
-        // }
-
-        return $this->render('dashboard/create_game.html.twig', [
-            // 'form' => $form->createView(),
-            'isEdit' => true,
+        return $this->json([
+            'playerOnePoints' => $playerOnePoints,
+            'playerTwoPoints' => $playerTwoPoints,
+            'currentSet' => $game->getCurrentSet(),
+            'id' => $id,
         ]);
+    }
+
+    #[Route('/finish-set/{id}', name: 'app_finish_set')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function finishSet(
+        int $id,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $game = $entityManager->getRepository(Games::class)->find($id);
+
+        if (!$game) {
+            throw $this->createNotFoundException('Game not found.');
+        }
+
+        $pointsPlayerOne = 0;
+        $pointsPlayerTwo = 0;
+        $setPlayerOne = 0;
+        $setPlayerTwo = 0;
+        $currentSet = $game->getCurrentSet();
+
+        switch ($game->getCurrentSet()) {
+            case 1:
+                $pointsPlayerOne = $game->getPlayerOneSet1();
+                $pointsPlayerTwo = $game->getPlayerTwoSet1();
+                break;
+            case 2:
+                $pointsPlayerOne = $game->getPlayerOneSet2();
+                $pointsPlayerTwo = $game->getPlayerTwoSet2();
+                break;
+            case 3:
+                $pointsPlayerOne = $game->getPlayerOneSet3();
+                $pointsPlayerTwo = $game->getPlayerTwoSet3();
+                break;
+            case 4:
+                $pointsPlayerOne = $game->getPlayerOneSet4();
+                $pointsPlayerTwo = $game->getPlayerTwoSet4();
+                break;
+            case 5:
+                $pointsPlayerOne = $game->getPlayerOneSet5();
+                $pointsPlayerTwo = $game->getPlayerTwoSet5();
+                break;
+            default:
+                $pointsPlayerOne = 0;
+                $pointsPlayerTwo = 0;
+        }
+
+        if ($pointsPlayerOne > $pointsPlayerTwo && $currentSet < 6) {
+            $setPlayerOne = $game->getSetsTeamOne() + 1;
+            $game->setSetsTeamOne($setPlayerOne);
+            $setPlayerTwo = $game->getSetsTeamTwo();
+            $game->setCurrentSet($currentSet + 1);
+        } elseif ($currentSet < 6) {
+            $setPlayerTwo = $game->getSetsTeamTwo() + 1;
+            $game->setSetsTeamTwo($setPlayerTwo);
+            $setPlayerOne = $game->getSetsTeamOne();
+            $game->setCurrentSet($currentSet + 1);
+        }
+
+        $pointsPlayerOne = 0;
+        $pointsPlayerTwo = 0;
+        $entityManager->flush();
+
+        return $this->json([
+            'id' => $id,
+            'setsPlayerOne' => $setPlayerOne,
+            'setsPlayerTwo' => $setPlayerTwo,
+            'pointsPlayerOne' => $pointsPlayerOne,
+            'pointsPlayerTwo' => $pointsPlayerTwo,
+        ]);
+    }
+
+    #[Route('/finish-game/{id}', name: 'app_finish_game')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function finishGame(
+        int $id,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $game = $entityManager->getRepository(Games::class)->find($id);
+
+        if (!$game) {
+            throw $this->createNotFoundException('Game not found.');
+        }
+
+        if ($game->getSetsTeamOne() > $game->getSetsTeamTwo()) {
+            $game->setGamesTeamOne(1);
+            $game->setGamesTeamTwo(0);
+        } else {
+            $game->setGamesTeamOne(0);
+            $game->setGamesTeamTwo(1);
+        }
+
+        $game->setStatus('Completed');
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_dashboard_games');
     }
 }

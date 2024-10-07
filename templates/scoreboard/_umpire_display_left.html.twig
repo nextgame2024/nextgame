@@ -1,0 +1,77 @@
+<div class="grid grid-cols-2 h-screen">
+  <div class="relative bg-black border-4 border-yellow-500">
+    <div class="absolute top-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+      <a href="#" data-modal-target="finishGameModal-{{ id }}">
+        <div class="mb-2 text-yellow-500 text-2xl text-center">Go to the</div>
+        <img src="{{ profiles ~ 'NextGame.png' }}" class="inline-block" />
+      </a>
+    </div>
+    <div class="absolute top-0 right-0 w-[18%] h-[23%] bg-yellow-500 flex items-center justify-center text-white border-4 border-black">
+      <span class="text-[10rem] text-black font-bold" id="setsPlayerTwo">{{ setPlayerTwo }}</span>
+    </div>
+    <div class="absolute bottom-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+        <a href="#" class="text-yellow-500 text-2xl relative group" onclick="subtractScore({{ id }}, {{ playerIdTwo }})">
+          <div class="flex items-center">
+            <span class="text-[10rem] text-yellow-500 font-bold">-</span>
+          </div>
+        </a>
+      </div>
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[45%] h-[15%] bg-black flex items-center justify-center text-white border-4 border-black">
+        <a href="{{ path('app_umpire', {id: id, display: 0}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+        <div class="flex items-center">
+          <span class="text-2xl text-yellow-500 font-bold">{{ playerTwoName }}</span>
+          <i class="fa-solid fa-circle-right ml-3 text-5xl"></i>
+        </div>
+      </a>
+    </div>
+    <div class="absolute bottom-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+      <a href="#" class="text-yellow-500 text-2xl relative group" onclick="updateScore({{ id }}, {{ playerIdTwo }})">
+          <div class="flex items-center">
+              <span class="text-[10rem] text-yellow-500 font-bold">+</span>
+          </div>
+      </a>
+    </div>
+
+    <div class="h-full flex items-center justify-center">
+      <span class="text-[38rem] text-yellow-500 font-bold" id="playerTwo">{{ pointsPlayerTwo }}</span>
+    </div>
+  </div>
+
+  <div class="relative bg-black border-4 border-yellow-500">
+      <div class="absolute top-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+        <button type="button" class="text-yellow-500 text-2xl relative group" data-modal-target="finishSetModal-{{ id }}">
+          <div class="mb-3">Finish set</div>
+          <i class="fa-solid fa-circle-check text-7xl ml-2"></i>
+        </button>
+      </div>
+
+      <div class="absolute top-0 left-0 w-[18%] h-[23%] bg-yellow-500 flex items-center justify-center text-white border-4 border-black">
+      <span class="text-[10rem] text-black font-bold" id="setsPlayerOne">{{ setPlayerOne }}</span>
+    </div>
+    <div class="absolute bottom-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+      <a href="#" class="text-yellow-500 text-2xl relative group" onclick="subtractScore({{ id }}, {{ playerIdOne }})">
+        <div class="flex items-center">
+          <span class="text-[10rem] text-yellow-500 font-bold">-</span>
+        </div>
+      </a>
+    </div>
+    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[45%] h-[15%] bg-black flex items-center justify-center text-white border-4 border-black">
+      <a href="{{ path('app_umpire', {id: id, display: 0}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+        <div class="flex items-center">
+          <i class="fa-solid fa-circle-left mr-3 text-5xl"></i>
+          <span class="text-2xl text-yellow-500 font-bold">{{ playerOneName }}</span>
+        </div>
+      </a>
+    </div>
+    <div class="absolute bottom-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
+        <a href="#" class="text-yellow-500 text-2xl relative group" onclick="updateScore({{ id }}, {{ playerIdOne }})">
+            <div class="flex items-center">
+                <span class="text-[10rem] text-yellow-500 font-bold">+</span>
+            </div>
+        </a>
+    </div>
+    <div class="h-full flex items-center justify-center">
+      <span class="text-[38rem] text-yellow-500 font-bold" id="playerOne">{{ pointsPlayerOne }}</span>
+    </div>
+  </div>
+</div>

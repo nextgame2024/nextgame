@@ -1,97 +1,156 @@
 {% extends 'dashboardBase.html.twig' %}
 
 {% block body %}
-<div class="grid grid-cols-2 h-screen">
-  <div class="relative bg-black border-4 border-yellow-500">
-    <div class="absolute top-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
-      <a href="{{ path('app_dashboard') }}">
-        <div class="mb-2 text-yellow-500 text-2xl text-center">Go to the</div>
-        <img src="{{ profiles ~ 'NextGame.png' }}" class="inline-block" />
-      </a>
-    </div>
-    <div class="absolute top-0 right-0 w-[18%] h-[23%] bg-yellow-500 flex items-center justify-center text-white border-4 border-black">
-      <span class="text-[10rem] text-black font-bold" id="setPlayerOne">{{ setPlayerOne }}</span>
-    </div>
-    <div class="absolute bottom-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
-      <a href="{{ path('app_scoreboard_subtract_score', {id: id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-        <div class="flex items-center">
-          <span class="text-[10rem] text-yellow-500 font-bold" id="setPlayerFour1">-</span>
-        </div>
-      </a>
-    </div>
-    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[45%] h-[15%] bg-black flex items-center justify-center text-white border-4 border-black">
-      <a href="{{ path('app_scoreboard', {id: id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-        <div class="flex items-center">
-          <span class="text-2xl text-yellow-500 font-bold" id="setPlayerFour1">{{ playerOneName }}</span>
-          <i class="fa-solid fa-circle-right ml-3 text-5xl"></i>
-        </div>
-      </a>
-    </div>
-    <div class="absolute bottom-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
-      <a href="{{ path('add_score_player', {id: id, playerId: playerIdOne}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-        <div class="flex items-center">
-          <span class="text-[10rem] text-yellow-500 font-bold" id="setPlayerFour1">+</span>
-        </div>
-      </a>
-    </div>
-    <div class="h-full flex items-center justify-center">
-      <span class="text-[38rem] text-yellow-500 font-bold" id="playerOne">{{ pointsPlayerOne }}</span>
-    </div>
-  </div>
 
-  <div class="relative bg-black border-4 border-yellow-500">
-      <div class="absolute top-0 left-0 w-[18%] h-[23%] bg-yellow-500 flex items-center justify-center text-white border-4 border-black">
-        <span class="text-[10rem] text-black font-bold" id="setPlayerOne">{{ setPlayerOne }}</span>
-      </div>
-      
-      <div class="absolute top-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
-        <a href="{{ path('app_scoreboard', {id: playerIdOne}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-          <div class="mb-3">Finish set</div>
-          <i class="fa-solid fa-circle-check text-7xl ml-3"></i>
-        </a>
-      </div>
+{% if display == 0 %}
+  {{ include ('scoreboard/_umpire_display_right.html.twig') }}
+{% else %}
+  {{ include ('scoreboard/_umpire_display_left.html.twig') }}
+{% endif %}
 
-      <div class="absolute bottom-0 left-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
-        <a href="{{ path('app_scoreboard', {id: playerIdTwo}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-          <div class="flex items-center">
-            <span class="text-[10rem] text-yellow-500 font-bold" id="setPlayerFour1">-</span>
-          </div>
-        </a>
-      </div>
-          <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[45%] h-[15%] bg-black flex items-center justify-center text-white border-4 border-black">
-      <a href="{{ path('app_scoreboard', {id: playerIdTwo}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-        <div class="flex items-center">
-          <i class="fa-solid fa-circle-left mr-3 text-5xl"></i>
-          <span class="text-2xl text-yellow-500 font-bold" id="setPlayerFour1">{{ playerTwoName }}</span>
+<div id="finishSetModal-{{ id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+  <div class="flex items-center justify-center min-h-screen px-4 text-center">
+    <div class="bg-gray-900 border-4 border-white text-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
+      <h2 class="text-lg font-semibold mb-4">Are you sure you want to continue?</h2>
+      <p class="mb-6">This action cannot be undone.</p>
+      <form id="finishSetForm-{{ id }}" method="post" action="{{ path('app_finish_set', {id: id}) }}" onsubmit="event.preventDefault(); finishSet({{ id }});">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ id) }}">
+        <div class="flex justify-center">
+          <button type="submit" id="deleteBtn-{{ id }}" class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded  mr-2">Submit</button>
+          <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('finishSetModal-{{ id }}')">Cancel</button>
         </div>
-      </a>
+      </form>
+      <div id="spinner-{{ id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+        <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+      </div>
     </div>
-      <div class="absolute bottom-0 right-0 w-[18%] h-[23%] bg-gray-800 flex items-center justify-center text-white border-4 border-black">
-        <a href="{{ path('add_score_player', {id: id, playerId: playerIdTwo}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-          <div class="flex items-center">
-            <span class="text-[10rem] text-yellow-500 font-bold" id="setPlayerFour1">+</span>
-          </div>
-        </a>
-      </div>
-
-      <div class="h-full flex items-center justify-center">
-        <span class="text-[38rem] text-yellow-500 font-bold" id="playerTwo">{{ pointsPlayerTwo }}</span>
-      </div>
   </div>
 </div>
 
-{# <script>
-  const gameId = {{ id }};
-  setInterval(() => {
-    fetch(`/scoreboard/update/${gameId}`)
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('setPlayerOne').textContent = data.setPlayerOne;
-        document.getElementById('playerOne').textContent = data.playerOne;
-        document.getElementById('setPlayerTwo').textContent = data.setPlayerTwo;
-        document.getElementById('playerTwo').textContent = data.playerTwo;
-      })
-      .catch(error => console.error('Error fetching scoreboard:', error));
-  }, 1000);
-</script> #}
+<div id="finishGameModal-{{ id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+  <div class="flex items-center justify-center min-h-screen px-4 text-center">
+    <div class="bg-gray-900 border-4 border-white text-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
+      <h2 class="text-lg font-semibold mb-4">Are you sure you want to continue?</h2>
+      <p class="mb-6">This action cannot be undone.</p>
+      <form method="post" action="{{ path('app_finish_game', {id: id}) }}" onsubmit="showLoadingSpinner('{{ id }}')">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ id) }}">
+        <div class="flex justify-center">
+          <button type="submit" id="deleteBtn-{{ id }}" class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded  mr-2">Submit</button>
+          <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('finishGameModal-{{ id }}')">Cancel</button>
+        </div>
+      </form>
+      <div id="spinner-{{ id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+        <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="loading-spinner" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-50 z-50" style="display: none;">
+    <svg class="w-16 h-16 text-gray-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+    </svg>
+</div>
+
+<script>
+    function showLoadingSpinner() {
+        document.getElementById('loading-spinner').style.display = 'flex';
+    }
+
+    function hideLoadingSpinner() {
+        document.getElementById('loading-spinner').style.display = 'none';
+    }
+
+    document.querySelectorAll('[data-modal-target]').forEach(button => {
+      button.addEventListener('click', function() {
+        const modalId = this.getAttribute('data-modal-target');
+        const modal = document.getElementById(modalId);
+
+        if (modal) {
+          modal.classList.remove('hidden');
+        } else {
+          console.error('Modal with id ' + modalId + ' not found');
+        }
+      });
+    });
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('hidden');
+      } else {
+        console.error('Modal with id ' + modalId + ' not found');
+      }
+    }
+
+    function updateScore(gameId, playerId) {
+        showLoadingSpinner();
+        fetch(`/scoreboard/add-score-player/${gameId}/${playerId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('playerOne').innerText = data.playerOnePoints;
+            document.getElementById('playerTwo').innerText = data.playerTwoPoints;
+        })
+        .catch(error => console.error('Error:', error))
+        .finally(() => {
+            hideLoadingSpinner();
+        });
+    }
+
+    function subtractScore(gameId, playerId) {
+        showLoadingSpinner();
+        fetch(`/scoreboard/subtract-score/${gameId}/${playerId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('playerOne').innerText = data.playerOnePoints;
+            document.getElementById('playerTwo').innerText = data.playerTwoPoints;
+        })
+        .catch(error => console.error('Error:', error))
+        .finally(() => {
+            hideLoadingSpinner();
+        });
+    }
+
+    function finishSet(gameId) {
+        closeModal('finishSetModal-' + gameId);
+        showLoadingSpinner();
+        fetch(document.getElementById('finishSetForm-' + gameId).action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('setsPlayerOne').innerText = data.setsPlayerOne;
+            document.getElementById('setsPlayerTwo').innerText = data.setsPlayerTwo;
+            document.getElementById('playerOne').innerText = data.pointsPlayerOne;
+            document.getElementById('playerTwo').innerText = data.pointsPlayerTwo;
+        })
+        .catch(error => console.error('Error:', error))
+        .finally(() => {
+            hideLoadingSpinner();
+        });
+    }
+</script>
 {% endblock %}

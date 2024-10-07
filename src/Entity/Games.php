@@ -108,6 +108,9 @@ class Games
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $current_set = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $display = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -469,6 +472,18 @@ class Games
     public function setCurrentSet(?string $current_set): static
     {
         $this->current_set = $current_set;
+
+        return $this;
+    }
+
+    public function getDisplay(): ?int
+    {
+        return $this->display;
+    }
+
+    public function setDisplay(?int $display): static
+    {
+        $this->display = $display;
 
         return $this;
     }

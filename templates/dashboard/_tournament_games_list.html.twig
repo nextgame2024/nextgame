@@ -32,7 +32,7 @@
     {% if tournament_games|length > 0 %}
         {% for games in tournament_games %}
             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[3%_9%_8%_8%_8%_8%_14%_14%_10%_12%] gap-3 items-center">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[3%_9%_8%_9%_9%_8%_13%_13%_9%_15%] gap-2 items-center">
                     <div class="h-[45px]">
                         <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
                     </div>
@@ -82,10 +82,10 @@
                     </div>
                     <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex items-center space-x-3 justify-end relative">
                         <div>
-                            <label for="team_{{ games.id }}" class="font-medium">Payment:</label>
-                            <select id="team_{{ games.id}}" name="team" 
+                            <label for="team_{{ games.game_id }}" class="font-medium">Payment:</label>
+                            <select id="team_{{ games.game_id}}" name="team" 
                                     class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                    onchange="confirmPaymentChange({{ games.id }}, this.value)">
+                                    onchange="confirmPaymentChange({{ games.game_id }}, this.value)">
                                 {% for currentPayment in payment %}
                                     <option value="{{ currentPayment }}" {% if games.is_paid == currentPayment %}selected{% endif %}>
                                         {{ currentPayment }}
@@ -95,7 +95,7 @@
                         </div>
                         
                         {% if games.status == 'Open' %}
-                            <button type="button" class="text-yellow-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.id }}">
+                            <button type="button" class="text-yellow-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.game_id }}">
                                 <i class="fa-duotone fa-solid fa-user-check"></i>
                                 <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
                                     style="left: 50%; transform: translateX(-50%) translateX(-3px);">
@@ -103,7 +103,7 @@
                                 </div>
                             </button>
                         {% else %}
-                            <button type="button" class="text-green-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.id }}">
+                            <button type="button" class="text-green-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.game_id }}">
                                 <i class="fa-duotone fa-solid fa-user-check"></i>
                                 <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
                                     style="left: 50%; transform: translateX(-50%) translateX(-3px);">
@@ -112,7 +112,7 @@
                             </button>
                         {% endif %}
 
-                            <a href="{{ path('app_dashboard_edit_game', {id: games.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                            <a href="{{ path('app_dashboard_edit_game', {id: games.game_id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
                                 <i class="fas fa-pencil-alt"></i>
                                 <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
                                     style="left: 50%; transform: translateX(-50%) translateX(-3px);">
@@ -120,7 +120,7 @@
                                 </div>
                             </a>
 
-                        <a href="{{ path('app_scoreboard', {id: games.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                        <a href="{{ path('app_scoreboard', {id: games.game_id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
                             <i class="fa-solid fa-clapperboard"></i>
                             <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
                                 style="left: 50%; transform: translateX(-50%) translateX(-3px);">
@@ -128,7 +128,7 @@
                             </div>
                         </a>
 
-                        <a href="{{ path('app_umpire', {id: games.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                        <a href="{{ path('app_umpire', {id: games.game_id, display: 0}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
                             <i class="fa-solid fa-chalkboard-user"></i>
                             <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
                                 style="left: 50%; transform: translateX(-50%) translateX(-3px);">
@@ -140,19 +140,19 @@
                 </div>
 
                 <!-- Modal -->
-                <div id="deleteModal-{{ games.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                <div id="deleteModal-{{ games.game_id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
                     <div class="flex items-center justify-center min-h-screen px-4 text-center">
                         <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
                             <h2 class="text-lg font-semibold mb-4">Are you sure you want to continue?</h2>
                             <p class="mb-6">Please verify and confirm the action.</p>
-                            <form method="post" action="{{ path('app_dashboard_games', {id: games.id}) }}" onsubmit="showLoadingSpinner('{{ games.id }}')">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ games.id) }}">
+                            <form method="post" action="{{ path('app_dashboard_games', {id: games.game_id}) }}" onsubmit="showLoadingSpinner('{{ games.game_id }}')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ games.game_id) }}">
                                 <div class="flex justify-center">
-                                    <button type="submit" id="deleteBtn-{{ games.id }}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded  mr-2">Submit</button>
-                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('deleteModal-{{ games.id }}')">Cancel</button>
+                                    <button type="submit" id="deleteBtn-{{ games.game_id }}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded  mr-2">Submit</button>
+                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('deleteModal-{{ games.game_id }}')">Cancel</button>
                                 </div>
                             </form>
-                            <div id="spinner-{{ games.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+                            <div id="spinner-{{ games.game_id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
                                 <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
@@ -162,20 +162,20 @@
                     </div>
                 </div>
                  <!-- paymentChangeModal -->
-                <div id="paymentChangeModal-{{ games.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                <div id="paymentChangeModal-{{ games.game_id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
                     <div class="flex items-center justify-center min-h-screen px-4 text-center">
                         <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
                             <h2 class="text-lg font-semibold mb-4">Are you sure you want to continue?</h2>
                             <p class="mb-6">Please verify and confirm the action.</p>
-                            <form method="post" action="{{ path('app_dashboard_payment_change', {id: games.id}) }}" onsubmit="showLoadingSpinner('{{ games.id }}')">
-                                <input type="hidden" name="_token" value="{{ csrf_token('change-team' ~ games.id) }}">
-                                <input type="hidden" id="new_team_id-{{ games.id }}" name="new_team_id">
+                            <form method="post" action="{{ path('app_dashboard_payment_change', {id: games.game_id}) }}" onsubmit="showLoadingSpinner('{{ games.game_id }}')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('change-team' ~ games.game_id) }}">
+                                <input type="hidden" id="new_team_id-{{ games.game_id }}" name="new_team_id">
                                 <div class="flex justify-center">
                                     <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mr-2">Submit</button>
-                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('paymentChangeModal-{{ games.id }}')">Cancel</button>
+                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('paymentChangeModal-{{ games.game_id }}')">Cancel</button>
                                 </div>
                             </form>
-                            <div id="spinner-{{ games.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
+                            <div id="spinner-{{ games.game_id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
                                 <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>

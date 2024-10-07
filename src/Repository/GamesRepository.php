@@ -38,9 +38,8 @@ class GamesRepository extends ServiceEntityRepository
         ?string $searchValue = null
     ) {
         $conn = $this->getEntityManager()->getConnection()->getNativeConnection();
-        // dd($searchValue);
         $sql = 'SELECT 
-                g.id,
+                g.id AS game_id,
                 t.id,
                 tp.id AS tournament_type_id,
                 tp.name AS tournament_type_name,
