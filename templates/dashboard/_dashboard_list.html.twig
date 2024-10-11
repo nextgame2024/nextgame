@@ -4,225 +4,193 @@
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
     </svg>
 </div>
-
 <div class="overflow-x-auto">
     <div class="mt-2 mb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-        <form method="GET" action="{{ path('app_dashboard_registration') }}" class="flex flex-col sm:flex-row w-full sm:w-auto items-start sm:items-center">
-            <select name="search_by" class="border border-gray-300 rounded px-2 py-1 h-10 w-full sm:w-80 dark:bg-gray-700 dark:text-white dark:border-gray-600">
-                <option value="tournament_type" {{ search_by == 'tournament_type' ? 'selected' : '' }}>Tournament name</option>
-                <option value="t.start_day" {{ search_by == 't.start_day' ? 'selected' : '' }}>Start day</option>
-                <option value="t.end_day" {{ search_by == 't.end_day' ? 'selected' : '' }}>End day</option>
-                <option value="u.name" {{ search_by == 'u.name' ? 'selected' : '' }}>Name</option>
-                <option value="u.rating" {{ search_by == 'u.rating' ? 'selected' : '' }}>Rating</option>
-                <option value="d.name" {{ search_by == 'd.name' ? 'selected' : '' }}>Division</option>
-                {# <option value="tr.status" {{ search_by == 'tr.status' ? 'selected' : '' }}>Status</option> #}
+        <form method="GET" action="{{ path('app_dashboard') }}" class="flex flex-col sm:flex-row w-full sm:w-auto items-start sm:items-center">
+            <select name="search_by_tournament" class="border border-gray-300 rounded px-2 ml-3 mr-2 py-1 h-10 w-full sm:w-80 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                <option value="0">Select a tournament</option>
+                {% for tournament in tournamentNames %}
+                        <option value="{{ tournament.id }}">
+                            {{ tournament.tournament_name }}
+                        </option>
+                {% endfor %}
             </select>
-            <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="mt-2 sm:mt-0 sm:ml-2 w-full sm:w-80 border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            <select name="search_by_division" class="border border-gray-300 rounded px-2 mr-2 py-1 h-10 w-full sm:w-80 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                <option value="0">Select a division</option>
+                {% for division in tournamentDivisions %}
+                        <option value="{{ division.division_id }}">
+                            {{ division.division_name }}
+                        </option>
+                {% endfor %}
+            </select>
             <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
         </form>
     </div>
-    <div class="space-y-2">
-    {% if tournament_registration|length > 0 %}
-        {% for registration in tournament_registration %}
-            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_14%_13%_13%_15%_13%_12%_8%] gap-2 items-center">
-                    <div class="h-[45px]">
-                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
-                    </div>
-                    <div>
-                        <div class="font-semibold text-lg dark:text-white">{{ registration.tournament_type }}</div>
-                        <p><span class="font-medium">Location:</span> {{ registration.location | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Hour:</span> 
-                            {% if registration.hour %}
-                                {{ registration.hour|date('h:i a') }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </p>
-                        <p><span class="font-medium">Status:</span> {{ registration.tournament_status | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Start:</span>
-                            {% if registration.start_day %}
-                                {{ registration.start_day|date('Y-m-d') | default('-') }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </p>
-                        <p><span class="font-medium">End:</span>
-                            {% if registration.end_day %}
-                                {{ registration.end_day|date('Y-m-d') | default('-') }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Name:</span> {{ registration.name | default('-') }}</p>
-                        <p><span class="font-medium">Phone:</span> {{ registration.phone | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Rating:</span> {{ registration.rating | default('-') }}</p>
-                        <p><span class="font-medium">Division:</span> {{ registration.division | default('-') }}</p>
-                    </div>
-                    <div>
-                        <label for="team_{{ registration.tournament_registration_id }}" class="font-medium">Team:</label>
-                        <select id="team_{{ registration.tournament_registration_id }}" name="team" 
-                                class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                onchange="confirmTeamChange({{ registration.tournament_registration_id }}, this.value)">
-                            {% for team in registration.teams %}
-                                <option value="{{ team.id }}" {% if team.id == registration.team_id %}selected{% endif %}>
-                                    {{ team.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex items-center space-x-3 justify-end relative group">
-                        {% if registration.tournament_status == 'Open' %}
-                            <button type="button" class="text-yellow-500 text-2xl" data-modal-target="deleteModal-{{ registration.tournament_registration_id }}">
-                                <i class="fa-duotone fa-solid fa-user-check"></i>
-                            </button>
-                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                Register here
-                            </div>
-                        {% else %}
-                            <button type="button" class="text-green-500 text-2xl" data-modal-target="deleteModal-{{ registration.tournament_registration_id }}">
-                                <i class="fa-duotone fa-solid fa-user-check"></i>
-                            </button>
-                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                Leave the tournament
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
+</div>
 
-                <!-- Modal -->
-                <div id="deleteModal-{{ registration.tournament_registration_id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
-                    <div class="flex items-center justify-center min-h-screen px-4 text-center">
-                        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
-                            <h2 class="text-lg font-semibold mb-4">Are you sure you want to continue?</h2>
-                            <p class="mb-6">Please verify and confirm the action.</p>
-                            <form method="post" action="{{ path('app_dashboard_registration_status', {id: registration.tournament_registration_id}) }}" onsubmit="showLoadingSpinner('{{ registration.tournament_registration_id }}')">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ registration.tournament_registration_id) }}">
-                                <div class="flex justify-center">
-                                    <button type="submit" id="deleteBtn-{{ registration.tournament_registration_id }}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded  mr-2">Submit</button>
-                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('deleteModal-{{ registration.tournament_registration_id }}')">Cancel</button>
-                                </div>
-                            </form>
-                            <div id="spinner-{{ registration.tournament_registration_id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
-                                <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                                </svg>
+<div class="grid grid-cols-1 md:grid-cols-[60%_40%] gap-4">
+    <div class="overflow-x-auto">
+        <div class="bg-gray-100 dark:bg-gray-600 p-2 rounded-lg shadow">
+            <div class="space-y-2">
+                    {% if dashboard_player|length > 0 %}
+                        <div class="bg-yellow-400 dark:bg-yellow-400 border border-gray-300 dark:border-yellow-400 dark:text-black rounded-lg p-2 shadow-md w-full">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_25%_8%_10%_10%_10%_8%_8%_10%] gap-2 justify-center items-center">
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">Rank</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <div class="font-medium">Member</div>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">Played</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">Games won</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">Games lost</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">%</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">Sets won</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">Sets lost</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">%</span></p>
+                                    </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                 <!-- teamChangeModal -->
-                <div id="teamChangeModal-{{ registration.tournament_registration_id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
-                    <div class="flex items-center justify-center min-h-screen px-4 text-center">
-                        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
-                            <h2 class="text-lg font-semibold mb-4">Are you sure you want to change the team?</h2>
-                            <p class="mb-6">Please verify that all teams have been properly formed.</p>
-                            <form method="post" action="{{ path('app_dashboard_change_teams', {id: registration.tournament_registration_id}) }}" onsubmit="showLoadingSpinner('{{ registration.tournament_registration_id }}')">
-                                <input type="hidden" name="_token" value="{{ csrf_token('change-team' ~ registration.tournament_registration_id) }}">
-                                <input type="hidden" id="new_team_id-{{ registration.tournament_registration_id }}" name="new_team_id">
-                                <div class="flex justify-center">
-                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mr-2">Submit</button>
-                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('teamChangeModal-{{ registration.tournament_registration_id }}')">Cancel</button>
+                        {% for player in dashboard_player %}
+                            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_25%_8%_10%_10%_10%_8%_8%_10%] gap-2 items-center">
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ loop.index }}</span></p>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="font-semibold text-lg dark:text-white">{{ player.player_name }}</div>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ player.played | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ player.matches_won | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ player.matches_lost | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ player.matches_won_percentage | default('0') }} %</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ player.sets_won | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ player.sets_lost | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ player.sets_won_percentage | default('0') }} %</span></p>
+                                    </div>
                                 </div>
-                            </form>
-                            <div id="spinner-{{ registration.tournament_registration_id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
-                                <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                                </svg>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <script>
-                    function confirmTeamChange(tournamentId, newTeamId) {
-                        document.getElementById('new_team_id-' + tournamentId).value = newTeamId;
-                        const modal = document.getElementById('teamChangeModal-' + tournamentId);
-                        modal.classList.remove('hidden');
-                    }
-
-                    function closeModal(modalId) {
-                        document.getElementById(modalId).classList.add('hidden');
-                    }
-
-                    function showLoadingSpinner(tournamentId) {
-                        const modalContent = document.querySelector('#teamChangeModal-' + tournamentId + ' > .flex > .relative');
-                        modalContent.classList.add('hidden');
-                        const spinner = document.getElementById('spinner-' + tournamentId);
-                        spinner.classList.remove('hidden');
-                    }
-                </script>
-                <script>
-                    document.querySelectorAll('[data-modal-target]').forEach(button => {
-                        button.addEventListener('click', function() {
-                            const modal = document.getElementById(this.getAttribute('data-modal-target'));
-                            modal.classList.remove('hidden');
-                        });
-                    });
-
-                    function closeModal(modalId) {
-                        document.getElementById(modalId).classList.add('hidden');
-                    }
-
-                    function showLoadingSpinner(userId) {
-                        const modalContent = document.querySelector('#deleteModal-' + userId + ' > .flex > .relative');
-                        modalContent.classList.add('hidden');
-                        const spinner = document.getElementById('spinner-' + userId);
-                        spinner.classList.remove('hidden');
-                        const modal = document.getElementById('deleteModal-' + userId);
-                        modal.classList.add('hidden');
-                    }
-                </script>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">There's nothing here yet!</div>
+                    {% endif %}
             </div>
-        {% endfor %}
-    {% else %}
-        <div class="text-center py-4">There's nothing here yet!</div>
-    {% endif %}
+        </div>
+    </div>
+
+    <div class="flex flex-col justify-between">
+        <div class="bg-gray-100 dark:bg-gray-600 p-2 rounded-lg shadow">
+            <div class="overflow-x-auto">
+                <div class="space-y-2">
+                    {% if dashboard_teams|length > 0 %}
+                        <div class="bg-yellow-400 dark:bg-yellow-400 border border-gray-300 dark:border-yellow-400 dark:text-black rounded-lg p-2 shadow-md w-full">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_18%_10%_17%_17%_12%_12%] gap-2 items-center">
+                                        <div class="flex justify-center items-center">
+                                            <p><span class="font-medium">Rank</span></p>
+                                        </div>
+                                        <div class="flex justify-center items-center">
+                                            <div class="font-medium">Team</div>
+                                        </div>
+                                        <div class="flex justify-center items-center">
+                                            <p><span class="font-medium">Played</span></p>
+                                        </div>
+                                        <div class="flex justify-center items-center">
+                                            <p><span class="font-medium">Games won</span></p>
+                                        </div>
+                                        <div class="flex justify-center items-center">
+                                            <p><span class="font-medium">Games lost</span></p>
+                                        </div>
+                                        <div class="flex justify-center items-center">
+                                            <p><span class="font-medium">Points</span></p>
+                                        </div>
+                                        <div class="flex justify-center items-center">
+                                            <p><span class="font-medium">%</span></p>
+                                        </div>
+                            </div>
+                        </div>
+                        {% for team in dashboard_teams %}
+                            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_18%_10%_17%_17%_12%_12%] gap-2 items-center">
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ loop.index }}</span></p>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-lg dark:text-white">{{ team.team_name }}</div>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ team.played | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ team.matches_won | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ team.matches_lost | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ team.points | default('0') }}</span></p>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <p><span class="font-medium">{{ team.matches_won_percentage | default('0') }} %</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">There's nothing here yet!</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="bg-gray-200 p-4 rounded-lg shadow mt-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[33%_34%_33%] gap-3 items-center">
+                    <p><h2 class="text-lg font-semibold flex justify-center items-center">Teams</h2></p>
+                    <div class="h-[140px]">
+                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[0].team_name }}</span></p>
+                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'firstPlace.jpg' }}" class="flex justify-center items-center h-[140px] w-[140px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
+                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[0].player_name }}</span></p>
+                    </div>
+                    <div class="h-[140px]">
+                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[1].team_name }}</span></p>
+                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'secondPlace.jpg' }}" class="flex justify-center items-center h-[140px] w-[140px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
+                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[1].player_name }}</span></p>
+                    </div>
+                    <div class="h-[140px]">
+                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[2].team_name }}</span></p>
+                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'thirdPlace.jpg' }}" class="h-[140px] w-[140px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
+                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[2].player_name }}</span></p>
+                    </div>
+                    <p><h2 class="text-lg font-semibold mt-16 flex justify-center items-center">Players</h2></p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-</div>
-
-<div class="mt-4">
-    <nav>
-        <ul class="inline-flex -space-x-px">
-            {% if current_page > 1 %}
-                <li>
-                    <a href="{{ path('app_dashboard_registration', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
-                </li>
-            {% else %}
-                <li>
-                    <span class="px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Previous</span>
-                </li>
-            {% endif %}
-            {% for page in 1..total_pages %}
-                <li>
-                    <a href="{{ path('app_dashboard_registration', {page: page, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
-                </li>
-            {% endfor %}
-            {% if current_page < total_pages %}
-                <li>
-                    <a href="{{ path('app_dashboard_registration', {page: current_page + 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
-                </li>
-            {% else %}
-                <li>
-                    <span class="px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Next</span>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-</div>
-
-<!-- Loading -->
 <script>
     function showLoadingSpinner() {
         document.getElementById('loading-spinner').style.display = 'flex';

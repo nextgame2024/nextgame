@@ -21,54 +21,26 @@
     })
     .then(response => response.json())
     .then(data => {
-      // Update scoreboard data directly
-      document.getElementById('setPlayerOne').textContent = data.setPlayerOne;
-      document.getElementById('playerOne').textContent = data.playerOne;
-      document.getElementById('setPlayerTwo').textContent = data.setPlayerTwo;
-      document.getElementById('playerTwo').textContent = data.playerTwo;
-
-      // Handle switching display mode only when needed
+      if (data.status == 'Completed') {
+        window.location.href = "{{ path('app_dashboard_games') }}";
+        return;
+      }
       const scoreboardDisplay = document.getElementById('scoreboard-display');
       if (data.display == 0 && !scoreboardDisplay.classList.contains('right-display')) {
-        // Load the right display if it's not already loaded
         scoreboardDisplay.innerHTML = `{% include 'scoreboard/_scoreboard_display_right.html.twig' %}`;
         scoreboardDisplay.classList.add('right-display');
         scoreboardDisplay.classList.remove('left-display');
       } else if (data.display == 1 && !scoreboardDisplay.classList.contains('left-display')) {
-        // Load the left display if it's not already loaded
         scoreboardDisplay.innerHTML = `{% include 'scoreboard/_scoreboard_display_left.html.twig' %}`;
         scoreboardDisplay.classList.add('left-display');
         scoreboardDisplay.classList.remove('right-display');
       }
+      document.getElementById('setPlayerOne').textContent = data.setPlayerOne;
+      document.getElementById('playerOne').textContent = data.playerOne;
+      document.getElementById('setPlayerTwo').textContent = data.setPlayerTwo;
+      document.getElementById('playerTwo').textContent = data.playerTwo;
     })
     .catch(error => console.error('Error fetching scoreboard:', error));
   }, 2000);
 </script>
 {% endblock %}
-
-
-
-{# {% extends 'dashboardBase.html.twig' %}
-
-{% block body %}
-{% if display == 0 %}
-  {{ include ('scoreboard/_scoreboard_display_right.html.twig') }}
-{% else %}
-  {{ include ('scoreboard/_scoreboard_display_left.html.twig') }}
-{% endif %}
-
-<script>
-  const gameId = {{ id }};
-  setInterval(() => {
-    fetch(`/scoreboard/update/${gameId}`)
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('setPlayerOne').textContent = data.setPlayerOne;
-        document.getElementById('playerOne').textContent = data.playerOne;
-        document.getElementById('setPlayerTwo').textContent = data.setPlayerTwo;
-        document.getElementById('playerTwo').textContent = data.playerTwo;
-      })
-      .catch(error => console.error('Error fetching scoreboard:', error));
-  }, 2000);
-</script>
-{% endblock %} #}

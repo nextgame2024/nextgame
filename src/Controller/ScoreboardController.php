@@ -38,6 +38,7 @@ class ScoreboardController extends AbstractController
             $setPlayerTwo = $game->getSetsTeamTwo();
             $playerOneName = $game->getPlayerOne()->getName();
             $playerTwoName = $game->getPlayerTwo()->getName();
+            $status = $game->getStatus();
 
             switch ($current_set) {
                 case 1:
@@ -74,6 +75,7 @@ class ScoreboardController extends AbstractController
                 'playerOneName' => $playerOneName,
                 'playerTwoName' => $playerTwoName,
                 'display' => $game->getDisplay(),
+                'status' => $status,
                 'id' => $id,
             ];
         });
@@ -86,133 +88,6 @@ class ScoreboardController extends AbstractController
             'id' => $id
         ]));
     }
-
-
-    // #[Route('/scoreboard/{id}', name: 'app_scoreboard')]
-    // #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    // public function scoreboard(
-    //     int $id,
-    //     EntityManagerInterface $entityManager,
-    //     CacheInterface $cache
-    // ): Response {
-    //     $cacheKey = 'game_scoreboard_' . $id;
-
-    //     $gameData = $cache->get($cacheKey, function (ItemInterface $item) use ($id, $entityManager) {
-    //         $item->expiresAfter(30);
-    //         $game = $entityManager->getRepository(Games::class)->find($id);
-
-    //         if (!$game) {
-    //             throw $this->createNotFoundException('Game not found.');
-    //         }
-
-    //         $current_set = $game->getCurrentSet();
-    //         $setPlayerOne = $game->getSetsTeamOne();
-    //         $setPlayerTwo = $game->getSetsTeamTwo();
-    //         $playerOneName = $game->getPlayerOne()->getName();
-    //         $playerTwoName = $game->getPlayerTwo()->getName();
-
-    //         switch ($current_set) {
-    //             case 1:
-    //                 $playerOne = $game->getPlayerOneSet1();
-    //                 $playerTwo = $game->getPlayerTwoSet1();
-    //                 break;
-    //             case 2:
-    //                 $playerOne = $game->getPlayerOneSet2();
-    //                 $playerTwo = $game->getPlayerTwoSet2();
-    //                 break;
-    //             case 3:
-    //                 $playerOne = $game->getPlayerOneSet3();
-    //                 $playerTwo = $game->getPlayerTwoSet3();
-    //                 break;
-    //             case 4:
-    //                 $playerOne = $game->getPlayerOneSet4();
-    //                 $playerTwo = $game->getPlayerTwoSet4();
-    //                 break;
-    //             case 5:
-    //                 $playerOne = $game->getPlayerOneSet5();
-    //                 $playerTwo = $game->getPlayerTwoSet5();
-    //                 break;
-    //             default:
-    //                 $playerOne = 0;
-    //                 $playerTwo = 0;
-    //         }
-
-    //         return [
-    //             'playerOne' => $playerOne,
-    //             'playerTwo' => $playerTwo,
-    //             'current_set' => $current_set,
-    //             'setPlayerOne' => $setPlayerOne,
-    //             'setPlayerTwo' => $setPlayerTwo,
-    //             'current_set' => $current_set,
-    //             'playerOneName' => $playerOneName,
-    //             'playerTwoName' => $playerTwoName,
-    //             'display' => $game->getDisplay(),
-    //             'id' => $id,
-    //         ];
-    //     });
-
-    //     return $this->render('scoreboard/scoreboard.html.twig', array_merge($gameData, [
-    //         'id' => $id
-    //     ]));
-    // }
-
-    // #[Route('/scoreboard/update/{id}', name: 'app_scoreboard_update')]
-    // #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    // public function updateScoreboard(
-    //     int $id,
-    //     EntityManagerInterface $entityManager,
-    //     CacheInterface $cache
-    // ): Response {
-    //     $cacheKey = 'game_scoreboard_' . $id;
-    //     $data = $cache->get($cacheKey, function () use ($id, $entityManager) {
-    //         $game = $entityManager->getRepository(Games::class)->find($id);
-    //         dd($game->getDisplay());
-    //         if (!$game) {
-    //             throw $this->createNotFoundException('Game not found.');
-    //         }
-
-    //         $current_set = $game->getCurrentSet();
-    //         $setPlayerOne = $game->getSetsTeamOne();
-    //         $setPlayerTwo = $game->getSetsTeamTwo();
-
-    //         switch ($current_set) {
-    //             case 1:
-    //                 $playerOne = $game->getPlayerOneSet1();
-    //                 $playerTwo = $game->getPlayerTwoSet1();
-    //                 break;
-    //             case 2:
-    //                 $playerOne = $game->getPlayerOneSet2();
-    //                 $playerTwo = $game->getPlayerTwoSet2();
-    //                 break;
-    //             case 3:
-    //                 $playerOne = $game->getPlayerOneSet3();
-    //                 $playerTwo = $game->getPlayerTwoSet3();
-    //                 break;
-    //             case 4:
-    //                 $playerOne = $game->getPlayerOneSet4();
-    //                 $playerTwo = $game->getPlayerTwoSet4();
-    //                 break;
-    //             case 5:
-    //                 $playerOne = $game->getPlayerOneSet5();
-    //                 $playerTwo = $game->getPlayerTwoSet5();
-    //                 break;
-    //             default:
-    //                 throw $this->createNotFoundException('Invalid current set.');
-    //         }
-
-    //         return [
-    //             'playerOne' => $playerOne,
-    //             'playerTwo' => $playerTwo,
-    //             'setPlayerOne' => $setPlayerOne,
-    //             'setPlayerTwo' => $setPlayerTwo,
-    //             'current_set' => $current_set,
-    //             'display' => $game->getDisplay(),
-    //             'id' => $id,
-    //         ];
-    //     });
-
-    //     return $this->json($data);
-    // }
 
     #[Route('/umpire/{id}/{display}', name: 'app_umpire')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]

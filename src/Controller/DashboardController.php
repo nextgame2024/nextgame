@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\DashboardRepository;
 use App\Repository\UserRepository;
 use App\Repository\TeamsRepository;
 use App\Repository\UserProfileRepository;
@@ -18,62 +19,64 @@ class DashboardController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(
         Request $request,
-        UserRepository $userRepository,
+        DashboardRepository $dashboardRepository,
         UserProfileRepository $userProfile,
-        TournamentRegistrationRepository $tournamentRegistration,
-        TeamsRepository $teamsRepository
     ): Response {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
+        $dashboardByPlayer = [];
+        $dashboardByTeams = [];
+        $tournamentNames = [];
+        $tournamentDivisions = [];
         $currentLocation = $userProfile->findLocationsByUserId($currentUser->getId());
-        $page = $request->query->getInt('page', 1);
-        $limit = 10;
-        $sortBy = $request->query->get('sort_by', 'team_name');
-        $order = $request->query->get('order', 'ASC');
-        $searchBy = $request->query->get('search_by', null);
-        $searchValue = $request->query->get('search_value', null);
         $getCurrentLocation = $currentLocation[0]->getLocation();
-        $location = $getCurrentLocation->getId();
-        $offset = ($page - 1) * $limit;
+        $locationId = $getCurrentLocation->getId();
+        $searchByTournament = $request->query->get('search_by_tournament', null);
+        $searchByDivision = $request->query->get('search_by_division', null);
 
-        $paginator = $tournamentRegistration->findByTournamentRegistration(
-            $location,
-            $limit,
-            $offset,
-            $sortBy,
-            $order,
-            $searchBy,
-            $searchValue
-        );
-        $totalItems = $tournamentRegistration->countByTournamentRegistration(
-            $location,
-            $limit,
-            $offset,
-            $sortBy,
-            $order,
-            $searchBy,
-            $searchValue
-        );
-        $totalPages = ceil($totalItems / $limit);
+        if (!$searchByTournament) {
+            $searchByTournament = $dashboardRepository->findTournamentWithFirstGameCreated($locationId);
+        }
+        if (!$searchByDivision) {
+            $searchByDivision = $dashboardRepository->findDivisionWithFirstGameCreated($locationId);
+        }
 
-        foreach ($paginator as &$tournament) {
-            $teams = $teamsRepository->findTeamByUserTorneoId(
-                $tournament['tournament_id'],
-                $tournament['div_id']
-            );
+        if ($searchByTournament && $searchByDivision) {
+            $dashboardByPlayer = $dashboardRepository->dashboardByPlayer($searchByTournament, $searchByDivision, $locationId);
+            $dashboardByTeams = $dashboardRepository->dashboardByTeams($searchByTournament, $searchByDivision, $locationId);
+            $seachValues = $dashboardRepository->findActiveTournaments($locationId);
 
-            $tournament['teams'] = $teams;
+            foreach ($seachValues as $item) {
+                $uniqueKey = $item['id'] . '-' . $item['tournament_name'];
+                if (!isset($tournamentNames[$uniqueKey])) {
+                    $tournamentNames[$uniqueKey] = [
+                        'id' => $item['id'],
+                        'tournament_name' => $item['tournament_name'],
+                    ];
+                }
+            }
+            $tournamentNames = array_values($tournamentNames);
+
+            foreach ($seachValues as $item) {
+                $uniqueKey = $item['division_id'] . '-' . $item['division_name'];
+                if (!isset($tournamentDivisions[$uniqueKey])) {
+                    $tournamentDivisions[$uniqueKey] = [
+                        'division_id' => $item['division_id'],
+                        'division_name' => $item['division_name'],
+                    ];
+                }
+            }
+            $tournamentDivisions = array_values($tournamentDivisions);
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'tournament_registration' => $paginator,
-            'current_page' => $page,
-            'total_pages' => $totalPages,
-            'sort_by' => $sortBy,
-            'order' => $order,
-            'search_by' => $searchBy,
-            'search_value' => $searchValue,
+            'dashboard_player' => $dashboardByPlayer,
+            'dashboard_teams' => $dashboardByTeams,
+            'search_by_tournament' => $searchByTournament,
+            'search_by_division' => $searchByDivision,
+            'tournamentNames' => $tournamentNames,
+            'tournamentDivisions' => $tournamentDivisions,
         ]);
     }
 }
