@@ -30,7 +30,7 @@ class ScoreboardController extends AbstractController
             $game = $entityManager->getRepository(Games::class)->find($id);
 
             if (!$game) {
-                throw $this->createNotFoundException('Game not found.');
+                return ['error' => 'Game not found'];
             }
 
             $current_set = $game->getCurrentSet();
@@ -61,6 +61,14 @@ class ScoreboardController extends AbstractController
                     $playerOne = $game->getPlayerOneSet5();
                     $playerTwo = $game->getPlayerTwoSet5();
                     break;
+                case 6:
+                    $playerOne = $game->getPlayerOneSet6();
+                    $playerTwo = $game->getPlayerTwoSet6();
+                    break;
+                case 7:
+                    $playerOne = $game->getPlayerOneSet7();
+                    $playerTwo = $game->getPlayerTwoSet7();
+                    break;
                 default:
                     $playerOne = 0;
                     $playerTwo = 0;
@@ -81,6 +89,9 @@ class ScoreboardController extends AbstractController
         });
 
         if ($request->isXmlHttpRequest()) {
+            if (isset($gameData['error'])) {
+                return $this->json($gameData, Response::HTTP_NOT_FOUND);
+            }
             return $this->json($gameData);
         }
 
@@ -131,6 +142,14 @@ class ScoreboardController extends AbstractController
             case 5:
                 $playerOne = $game->getPlayerOneSet5();
                 $playerTwo = $game->getPlayerTwoSet5();
+                break;
+            case 6:
+                $playerOne = $game->getPlayerOneSet6();
+                $playerTwo = $game->getPlayerTwoSet6();
+                break;
+            case 7:
+                $playerOne = $game->getPlayerOneSet7();
+                $playerTwo = $game->getPlayerTwoSet7();
                 break;
             default:
                 $playerOne = 0;
@@ -204,6 +223,20 @@ class ScoreboardController extends AbstractController
                         $playerTwoPoints = $game->getPlayerTwoSet5();
                     }
                     break;
+                case 6:
+                    $playerOnePoints = $game->getPlayerOneSet6() + 1;
+                    if ($playerOnePoints <= 99) {
+                        $game->setPlayerOneSet6($playerOnePoints);
+                        $playerTwoPoints = $game->getPlayerTwoSet6();
+                    }
+                    break;
+                case 7:
+                    $playerOnePoints = $game->getPlayerOneSet7() + 1;
+                    if ($playerOnePoints <= 99) {
+                        $game->setPlayerOneSet7($playerOnePoints);
+                        $playerTwoPoints = $game->getPlayerTwoSet7();
+                    }
+                    break;
                 default:
                     $playerOnePoints = 0;
                     $playerTwoPoints = 0;
@@ -244,6 +277,20 @@ class ScoreboardController extends AbstractController
                     if ($playerTwoPoints <= 99) {
                         $game->setPlayerTwoSet5($playerTwoPoints);
                         $playerOnePoints = $game->getPlayerOneSet5();
+                    }
+                    break;
+                case 6:
+                    $playerTwoPoints = $game->getPlayerTwoSet6() + 1;
+                    if ($playerTwoPoints <= 99) {
+                        $game->setPlayerTwoSet6($playerTwoPoints);
+                        $playerOnePoints = $game->getPlayerOneSet6();
+                    }
+                    break;
+                case 7:
+                    $playerTwoPoints = $game->getPlayerTwoSet7() + 1;
+                    if ($playerTwoPoints <= 99) {
+                        $game->setPlayerTwoSet7($playerTwoPoints);
+                        $playerOnePoints = $game->getPlayerOneSet7();
                     }
                     break;
                 default:
@@ -334,6 +381,28 @@ class ScoreboardController extends AbstractController
                         $game->setPlayerOneSet5($playerOnePoints);
                     }
                     break;
+                case 6:
+                    $playerTwoPoints = $game->getPlayerTwoSet6();
+                    $playerOnePoints = $game->getPlayerOneSet6();
+                    if ($playerOnePoints == 0) {
+                        $playerOnePoints = $game->getPlayerOneSet6();
+                    }
+                    if ($playerOnePoints > 0) {
+                        $playerOnePoints = $game->getPlayerOneSet6() - 1;
+                        $game->setPlayerOneSet6($playerOnePoints);
+                    }
+                    break;
+                case 7:
+                    $playerTwoPoints = $game->getPlayerTwoSet7();
+                    $playerOnePoints = $game->getPlayerOneSet7();
+                    if ($playerOnePoints == 0) {
+                        $playerOnePoints = $game->getPlayerOneSet7();
+                    }
+                    if ($playerOnePoints > 0) {
+                        $playerOnePoints = $game->getPlayerOneSet7() - 1;
+                        $game->setPlayerOneSet7($playerOnePoints);
+                    }
+                    break;
                 default:
                     $playerOnePoints = 0;
                     $playerTwoPoints = 0;
@@ -396,6 +465,28 @@ class ScoreboardController extends AbstractController
                         $game->setPlayerTwoSet5($playerTwoPoints);
                     }
                     break;
+                case 6:
+                    $playerOnePoints = $game->getPlayerOneSet6();
+                    $playerTwoPoints = $game->getPlayerTwoSet6();
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet6();
+                    }
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet6() - 1;
+                        $game->setPlayerTwoSet6($playerTwoPoints);
+                    }
+                    break;
+                case 7:
+                    $playerOnePoints = $game->getPlayerOneSet7();
+                    $playerTwoPoints = $game->getPlayerTwoSet7();
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet7();
+                    }
+                    if ($playerTwoPoints > 0) {
+                        $playerTwoPoints = $game->getPlayerTwoSet7() - 1;
+                        $game->setPlayerTwoSet7($playerTwoPoints);
+                    }
+                    break;
                 default:
                     $playerOnePoints = 0;
                     $playerTwoPoints = 0;
@@ -452,17 +543,25 @@ class ScoreboardController extends AbstractController
                 $pointsPlayerOne = $game->getPlayerOneSet5();
                 $pointsPlayerTwo = $game->getPlayerTwoSet5();
                 break;
+            case 6:
+                $pointsPlayerOne = $game->getPlayerOneSet6();
+                $pointsPlayerTwo = $game->getPlayerTwoSet6();
+                break;
+            case 7:
+                $pointsPlayerOne = $game->getPlayerOneSet7();
+                $pointsPlayerTwo = $game->getPlayerTwoSet7();
+                break;
             default:
                 $pointsPlayerOne = 0;
                 $pointsPlayerTwo = 0;
         }
 
-        if ($pointsPlayerOne > $pointsPlayerTwo && $currentSet < 6) {
+        if ($pointsPlayerOne > $pointsPlayerTwo && $currentSet < 8) {
             $setPlayerOne = $game->getSetsTeamOne() + 1;
             $game->setSetsTeamOne($setPlayerOne);
             $setPlayerTwo = $game->getSetsTeamTwo();
             $game->setCurrentSet($currentSet + 1);
-        } elseif ($currentSet < 6) {
+        } elseif ($currentSet < 8) {
             $setPlayerTwo = $game->getSetsTeamTwo() + 1;
             $game->setSetsTeamTwo($setPlayerTwo);
             $setPlayerOne = $game->getSetsTeamOne();

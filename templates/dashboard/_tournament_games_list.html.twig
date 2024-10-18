@@ -31,20 +31,14 @@
     <div class="space-y-2">
     {% if tournament_games|length > 0 %}
         {% for games in tournament_games %}
-            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[3%_9%_8%_9%_9%_8%_13%_13%_9%_15%] gap-2 items-center">
-                    <div class="h-[45px]">
+            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[12%_12%_9%_11%_16%_15%_19%] gap-2 items-center">
+                    {# <div class="h-[45px]">
                         <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
-                    </div>
+                    </div> #}
                     <div>
-                        <div class="font-semibold text-lg dark:text-white">{{ games.tournament_type_name }}</div>
+                        <div class="font-bold dark:text-white">{{ games.tournament_type_name }}</div>
                         <p><span class="font-medium">Location:</span> {{ games.location_name | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Round:</span> {{ games.round | default('-') }}</p>
-                        <p><span class="font-medium">Table:</span> {{ games.table_name | default('-') }}</p>
-                    </div>
-                    <div>
                         <p><span class="font-medium">Start:</span>
                             {% if games.start_day %}
                                 {{ games.start_day|date('Y-m-d') | default('-') }}
@@ -52,6 +46,10 @@
                                 -
                             {% endif %}
                         </p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Round:</span> {{ games.round | default('-') }}</p>
+                        <p><span class="font-medium">Table:</span> {{ games.table_name | default('-') }}</p>
                         <p><span class="font-medium">Hour:</span> 
                             {% if games.hour %}
                                 {{ games.hour|date('h:i a') }}
@@ -61,31 +59,34 @@
                         </p>
                     </div>
                     <div>
-                        <p><span class="font-medium">Team 1:</span> {{ games.team1_name | default('-') }}</p>
-                        <p><span class="font-medium">Team 2:</span> {{ games.team2_name | default('-') }}</p>
-                    </div>
-                    <div>
                         <p><span class="font-medium">Type:</span> {{ games.game_type | default('-') }}</p>
                         <p><span class="font-medium">Division:</span> {{ games.division_name | default('-') }}</p>
                     </div>
                     <div>
-                        <p><span class="font-medium">Player T1:</span> {{ games.player_one_name | default('-') }}</p>
-                        <p><span class="font-medium">Player T2:</span> {{ games.player_two_name | default('-') }}</p>
+                        <p><span class="font-medium">Team 1:</span> {{ games.team1_name | default('-') }}</p>
+                        <p><span class="font-medium">Team 2:</span> {{ games.team2_name | default('-') }}</p>
                     </div>
+                    {% if games.game_type == 'Doubles' %}
+                        <div>
+                            <p><span class="font-medium">Players T1:</span> {{ games.player_one_name | default('-') }} / {{ games.player_two_name | default('-') }}</p>
+                            <p><span class="font-medium">Players T2:</span> {{ games.player_three_name | default('-') }} / {{ games.player_four_name | default('-') }}</p>
+                        </div>
+                    {% else %}
+                        <div>
+                            <p><span class="font-medium">Player T1:</span> {{ games.player_one_name | default('-') }}</p>
+                            <p><span class="font-medium">Player T2:</span> {{ games.player_two_name | default('-') }}</p>
+                        </div>
+                    {% endif %}
                     <div>
-                        <p><span class="font-medium">Player T1:</span> {{ games.player_three_name | default('-') }}</p>
-                        <p><span class="font-medium">Player T2:</span> {{ games.player_four_name | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Date:</span> {{ games.game_date | default('-') }}</p>
+                        <p><span class="font-medium">Game:</span> {{ games.game_date | default('-') }}</p>
                         <p><span class="font-medium">Status:</span> {{ games.status | default('-') }}</p>
                     </div>
                     <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex items-center space-x-3 justify-end relative">
                         <div>
                             <label for="team_{{ games.game_id }}" class="font-medium">Payment:</label>
                             <select id="team_{{ games.game_id}}" name="team" 
-                                    class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                    onchange="confirmPaymentChange({{ games.game_id }}, this.value)">
+                                class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                onchange="confirmPaymentChange({{ games.game_id }}, this.value)">
                                 {% for currentPayment in payment %}
                                     <option value="{{ currentPayment }}" {% if games.is_paid == currentPayment %}selected{% endif %}>
                                         {{ currentPayment }}
@@ -93,7 +94,6 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        
                         {% if games.status == 'Open' %}
                             <button type="button" class="text-yellow-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.game_id }}">
                                 <i class="fa-duotone fa-solid fa-user-check"></i>
@@ -258,7 +258,47 @@
 
 </div>
 
-<div class="mt-4">
+<div class="mt-5">
+    <nav>
+        <ul class="inline-flex items-center -space-x-px w-full justify-center max-w-full">
+            {% if current_page > 1 %}
+                <li>
+                    <a href="{{ path('app_dashboard_games', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
+                </li>
+            {% else %}
+                <li>
+                    <span class="px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Previous</span>
+                </li>
+            {% endif %}
+
+            {% if current_page > 3 %}
+                <li><span class="px-3 py-2 leading-tight">...</span></li>
+            {% endif %}
+
+            {% for page in max(1, current_page - 2)..min(total_pages, current_page + 2) %}
+                <li>
+                    <a href="{{ path('app_dashboard_games', {page: page, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
+                </li>
+            {% endfor %}
+
+            {% if current_page < total_pages - 2 %}
+                <li><span class="px-3 py-2 leading-tight">...</span></li>
+            {% endif %}
+
+            {% if current_page < total_pages %}
+                <li>
+                    <a href="{{ path('app_dashboard_games', {page: current_page + 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
+                </li>
+            {% else %}
+                <li>
+                    <span class="px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Next</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{# <div class="mt-4">
     <nav>
         <ul class="inline-flex -space-x-px">
             {% if current_page > 1 %}
@@ -286,7 +326,7 @@
             {% endif %}
         </ul>
     </nav>
-</div>
+</div> #}
 
 <!-- Loading -->
 <script>

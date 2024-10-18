@@ -23,13 +23,13 @@
     <div class="space-y-2">
     {% if tournament_registration|length > 0 %}
         {% for registration in tournament_registration %}
-            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_14%_13%_13%_15%_13%_12%_8%] gap-3 items-center">
+            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_14%_12%_12%_15%_12%_12%_9%] gap-3 items-center">
                     <div class="h-[45px]">
                         <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
                     </div>
                     <div>
-                        <div class="font-semibold text-lg dark:text-white">{{ registration.tournament_type }}</div>
+                        <div class="font-bold dark:text-white">{{ registration.tournament_type }}</div>
                     </div>
                     <div>
                         <p><span class="font-medium">Location:</span> {{ registration.location | default('-') }}</p>
@@ -274,26 +274,36 @@
 
 </div>
 
-<div class="mt-4">
+<div class="mt-5">
     <nav>
-        <ul class="inline-flex -space-x-px">
+        <ul class="inline-flex items-center -space-x-px w-full justify-center max-w-full">
             {% if current_page > 1 %}
                 <li>
-                    <a href="{{ path('app_dashboard_registration', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
+                    <a href="{{ path('app_dashboard_tournament', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
                 </li>
             {% else %}
                 <li>
                     <span class="px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Previous</span>
                 </li>
             {% endif %}
-            {% for page in 1..total_pages %}
+
+            {% if current_page > 3 %}
+                <li><span class="px-3 py-2 leading-tight">...</span></li>
+            {% endif %}
+
+            {% for page in max(1, current_page - 2)..min(total_pages, current_page + 2) %}
                 <li>
-                    <a href="{{ path('app_dashboard_registration', {page: page, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
+                    <a href="{{ path('app_dashboard_tournament', {page: page, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
                 </li>
             {% endfor %}
+
+            {% if current_page < total_pages - 2 %}
+                <li><span class="px-3 py-2 leading-tight">...</span></li>
+            {% endif %}
+
             {% if current_page < total_pages %}
                 <li>
-                    <a href="{{ path('app_dashboard_registration', {page: current_page + 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
+                    <a href="{{ path('app_dashboard_tournament', {page: current_page + 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
                 </li>
             {% else %}
                 <li>

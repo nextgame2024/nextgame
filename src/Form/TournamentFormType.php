@@ -52,7 +52,7 @@ class TournamentFormType extends AbstractType
             ])
             ->add('hour', TimeType::class, [
                 'widget' => 'single_text',
-                'required' => false,
+                'required' => true,
             ])
             ->add('players', IntegerType::class, [
                 'required' => true,
@@ -61,7 +61,7 @@ class TournamentFormType extends AbstractType
                 'class' => Location::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a location',
-                'required' => false,
+                'required' => true,
                 'query_builder' => function (EntityRepository $er) use ($userLocation) {
                     return $er->createQueryBuilder('l')
                         ->where('l.id = :userLocation')

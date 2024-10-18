@@ -14,14 +14,20 @@
 <script>
   const gameId = {{ id }};
   setInterval(() => {
+    //fetch(`/public/index.php/scoreboard/${gameId}`, {
     fetch(`/scoreboard/${gameId}`, {
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
       }
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch scoreboard');
+      }
+      return response.json();
+    })
     .then(data => {
-      if (data.status == 'Completed') {
+      if (data.status === 'Completed') {
         window.location.href = "{{ path('app_dashboard_games') }}";
         return;
       }
@@ -40,7 +46,9 @@
       document.getElementById('setPlayerTwo').textContent = data.setPlayerTwo;
       document.getElementById('playerTwo').textContent = data.playerTwo;
     })
-    .catch(error => console.error('Error fetching scoreboard:', error));
+    .catch(error => {
+      console.error('Error fetching scoreboard:', error);
+    });
   }, 2000);
 </script>
 {% endblock %}

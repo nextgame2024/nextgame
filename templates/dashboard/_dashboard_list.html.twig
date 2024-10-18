@@ -28,50 +28,50 @@
     </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-[60%_40%] gap-4">
+<div class="grid grid-cols-1 md:grid-cols-[60%_38%] gap-4">
     <div class="overflow-x-auto">
         <div class="bg-gray-100 dark:bg-gray-600 p-2 rounded-lg shadow">
             <div class="space-y-2">
                     {% if dashboard_player|length > 0 %}
                         <div class="bg-yellow-400 dark:bg-yellow-400 border border-gray-300 dark:border-yellow-400 dark:text-black rounded-lg p-2 shadow-md w-full">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_25%_8%_10%_10%_10%_8%_8%_10%] gap-2 justify-center items-center">
-                                    <div class="flex justify-center items-center">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[8%_20%_8%_9%_9%_9%_8%_8%_10%] gap-2 justify-center items-center">
+                                    <div class="flex justify-start items-center">
                                         <p><span class="font-medium">Rank</span></p>
                                     </div>
-                                    <div class="flex justify-center items-center">
+                                    <div class="flex justify-start items-center">
                                         <div class="font-medium">Member</div>
                                     </div>
-                                    <div class="flex justify-center items-center">
+                                    <div class="flex justify-start items-center">
                                         <p><span class="font-medium">Played</span></p>
                                     </div>
-                                    <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">Games won</span></p>
+                                    <div class="flex justify-start items-center">
+                                        <p><span class="font-medium">Matches won</span></p>
                                     </div>
-                                    <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">Games lost</span></p>
+                                    <div class="flex justify-censtartter items-center">
+                                        <p><span class="font-medium">Matches lost</span></p>
                                     </div>
-                                    <div class="flex justify-center items-center">
+                                    <div class="flex justify-start items-center">
                                         <p><span class="font-medium">%</span></p>
                                     </div>
-                                    <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">Sets won</span></p>
+                                    <div class="flex justify-start items-center">
+                                        <p><span class="font-medium">Games won</span></p>
                                     </div>
-                                    <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">Sets lost</span></p>
+                                    <div class="flex justify-start items-center">
+                                        <p><span class="font-medium">Games lost</span></p>
                                     </div>
-                                    <div class="flex justify-center items-center">
+                                    <div class="flex justify-start items-center ml-3">
                                         <p><span class="font-medium">%</span></p>
                                     </div>
                             </div>
                         </div>
                         {% for player in dashboard_player %}
                             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_25%_8%_10%_10%_10%_8%_8%_10%] gap-2 items-center">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[8%_20%_8%_9%_9%_9%_8%_8%_10%] gap-2 items-center">
                                     <div class="flex justify-center items-center">
                                         <p><span class="font-medium">{{ loop.index }}</span></p>
                                     </div>
-                                    <div class="ml-4">
-                                        <div class="font-semibold text-lg dark:text-white">{{ player.player_name }}</div>
+                                    <div class="flex justify-start items-center">
+                                        <div class="font-bold dark:text-white">{{ player.player_name }}</div>
                                     </div>
                                     <div class="flex justify-center items-center">
                                         <p><span class="font-medium">{{ player.played | default('0') }}</span></p>
@@ -83,7 +83,7 @@
                                         <p><span class="font-medium">{{ player.matches_lost | default('0') }}</span></p>
                                     </div>
                                     <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">{{ player.matches_won_percentage | default('0') }} %</span></p>
+                                        <p><span class="font-medium">{{ player.matches_won_percentage | number_format(1) }} %</span></p>
                                     </div>
                                     <div class="flex justify-center items-center">
                                         <p><span class="font-medium">{{ player.sets_won | default('0') }}</span></p>
@@ -92,7 +92,7 @@
                                         <p><span class="font-medium">{{ player.sets_lost | default('0') }}</span></p>
                                     </div>
                                     <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">{{ player.sets_won_percentage | default('0') }} %</span></p>
+                                        <p><span class="font-medium">{{ player.sets_won_percentage | number_format(1) }} %</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -114,34 +114,34 @@
                                         <div class="flex justify-center items-center">
                                             <p><span class="font-medium">Rank</span></p>
                                         </div>
-                                        <div class="flex justify-center items-center">
+                                        <div class="flex justify-start items-center">
                                             <div class="font-medium">Team</div>
                                         </div>
                                         <div class="flex justify-center items-center">
                                             <p><span class="font-medium">Played</span></p>
                                         </div>
                                         <div class="flex justify-center items-center">
-                                            <p><span class="font-medium">Games won</span></p>
+                                            <p><span class="font-medium">Matches won</span></p>
                                         </div>
-                                        <div class="flex justify-center items-center">
-                                            <p><span class="font-medium">Games lost</span></p>
+                                        <div class="flex justify-start items-center">
+                                            <p><span class="font-medium">Matches lost</span></p>
                                         </div>
-                                        <div class="flex justify-center items-center">
+                                        <div class="flex justify-start items-center">
                                             <p><span class="font-medium">Points</span></p>
                                         </div>
-                                        <div class="flex justify-center items-center">
+                                        <div class="flex justify-start items-center ml-3">
                                             <p><span class="font-medium">%</span></p>
                                         </div>
                             </div>
                         </div>
                         {% for team in dashboard_teams %}
                             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_18%_10%_17%_17%_12%_12%] gap-2 items-center">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_18%_10%_15%_15%_12%_12%] gap-2 items-center">
                                     <div class="flex justify-center items-center">
                                         <p><span class="font-medium">{{ loop.index }}</span></p>
                                     </div>
                                     <div>
-                                        <div class="font-semibold text-lg dark:text-white">{{ team.team_name }}</div>
+                                        <div class="font-bold dark:text-white">{{ team.team_name }}</div>
                                     </div>
                                     <div class="flex justify-center items-center">
                                         <p><span class="font-medium">{{ team.played | default('0') }}</span></p>
@@ -156,7 +156,7 @@
                                         <p><span class="font-medium">{{ team.points | default('0') }}</span></p>
                                     </div>
                                     <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">{{ team.matches_won_percentage | default('0') }} %</span></p>
+                                        <p><span class="font-medium">{{ team.matches_won_percentage | number_format(1) }} %</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -167,21 +167,21 @@
                 </div>
             </div>
             <div class="bg-gray-200 p-4 rounded-lg shadow mt-4 dark:bg-gray-600">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[33%_34%_33%] gap-3 items-center">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[31%_32%_31%] gap-3 items-center">
                     <p><h2 class="text-lg font-semibold flex justify-center items-center">Teams</h2></p>
-                    <div class="h-[140px]">
+                    <div class="h-[100px]">
                         <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[0].team_name }}</span></p>
-                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'firstPlace.jpg' }}" class="flex justify-center items-center h-[140px] w-[140px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
+                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'firstPlace.jpg' }}" class="flex justify-center items-center h-[100px] w-[100px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
                         <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[0].player_name }}</span></p>
                     </div>
-                    <div class="h-[140px]">
+                    <div class="h-[100px]">
                         <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[1].team_name }}</span></p>
-                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'secondPlace.jpg' }}" class="flex justify-center items-center h-[140px] w-[140px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
+                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'secondPlace.jpg' }}" class="flex justify-center items-center h-[100px] w-[100px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
                         <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[1].player_name }}</span></p>
                     </div>
-                    <div class="h-[140px]">
+                    <div class="h-[100px]">
                         <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[2].team_name }}</span></p>
-                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'thirdPlace.jpg' }}" class="h-[140px] w-[140px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
+                        <div class="flex justify-center items-center"><img src="{{ profiles ~ 'thirdPlace.jpg' }}" class="h-[100px] w-[100px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
                         <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[2].player_name }}</span></p>
                     </div>
                     <p><h2 class="text-lg font-semibold mt-16 flex justify-center items-center">Players</h2></p>

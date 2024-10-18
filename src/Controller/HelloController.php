@@ -24,7 +24,7 @@ class HelloController extends AbstractController
     ];
 
     // #[Route('/{limit<\d+>?3}', name: 'app_index')]
-    #[Route('/', name: 'app_index')]
+    #[Route('/hello', name: 'asdasdf')]
     public function index(MicroPostRepository $posts, CommentRepository $comments, UserProfileRepository $profiles, EntityManagerInterface $entityManager): Response
     {
 

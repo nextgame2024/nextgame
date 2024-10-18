@@ -111,6 +111,18 @@ class Games
     #[ORM\Column(nullable: true)]
     private ?int $display = null;
 
+    #[ORM\Column]
+    private ?int $player_one_set_6 = null;
+
+    #[ORM\Column]
+    private ?int $player_one_set_7 = null;
+
+    #[ORM\Column]
+    private ?int $player_two_set_6 = null;
+
+    #[ORM\Column]
+    private ?int $player_two_set_7 = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -484,6 +496,54 @@ class Games
     public function setDisplay(?int $display): static
     {
         $this->display = $display;
+
+        return $this;
+    }
+
+    public function getPlayerOneSet6(): ?int
+    {
+        return $this->player_one_set_6;
+    }
+
+    public function setPlayerOneSet6(int $player_one_set_6): static
+    {
+        $this->player_one_set_6 = $player_one_set_6;
+
+        return $this;
+    }
+
+    public function getPlayerOneSet7(): ?int
+    {
+        return $this->player_one_set_7;
+    }
+
+    public function setPlayerOneSet7(int $player_one_set_7): static
+    {
+        $this->player_one_set_7 = $player_one_set_7;
+
+        return $this;
+    }
+
+    public function getPlayerTwoSet6(): ?int
+    {
+        return $this->player_two_set_6;
+    }
+
+    public function setPlayerTwoSet6(int $player_two_set_6): static
+    {
+        $this->player_two_set_6 = $player_two_set_6;
+
+        return $this;
+    }
+
+    public function getPlayerTwoSet7(): ?int
+    {
+        return $this->player_two_set_7;
+    }
+
+    public function setPlayerTwoSet7(int $player_two_set_7): static
+    {
+        $this->player_two_set_7 = $player_two_set_7;
 
         return $this;
     }

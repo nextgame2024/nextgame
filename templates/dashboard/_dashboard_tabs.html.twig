@@ -1,6 +1,6 @@
 {% embed 'shared/_tabs.html.twig' %}
     {% block tabs %}
-        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard' } %}
+        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard', classes: 'ml-3' } %}
             {% block content %}
                 Dashboard 
             {% endblock %}
