@@ -6,39 +6,41 @@
 </div>
 
 <div class="overflow-x-auto">
-    <div class="mt-2 mb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-        <form method="GET" action="{{ path('app_dashboard_games') }}" class="flex flex-col sm:flex-row w-full sm:w-auto items-start sm:items-center">
-            <select name="search_by" class="border border-gray-300 rounded px-2 py-1 h-10 w-full sm:w-80 dark:bg-gray-700 dark:text-white dark:border-gray-600">
-                <option value="ttournament_type_name" {{ search_by == 'tournament_type_name' ? 'selected' : '' }}>Tournament name</option>
-                <option value="t.start_day" {{ search_by == 't.start_day' ? 'selected' : '' }}>Start day</option>
-                <option value="t.end_day" {{ search_by == 't.end_day' ? 'selected' : '' }}>End day</option>
-                <option value="g.game_date" {{ search_by == 'g.game_date' ? 'selected' : '' }}>Date</option>
-                <option value="team1_name" {{ search_by == 'team1_name' ? 'selected' : '' }}>Team 1</option>
-                <option value="team2_name" {{ search_by == 'team2_name' ? 'selected' : '' }}>Team 2</option>
-                <option value="player_one_name" {{ search_by == 'player_one_name' ? 'selected' : '' }}>Player 1</option>
-                <option value="player_two_name" {{ search_by == 'player_two_name' ? 'selected' : '' }}>Player 2</option>
-                <option value="g.round" {{ search_by == 'g.round' ? 'selected' : '' }}>Round</option>
-                <option value="division_name" {{ search_by == 'division_name' ? 'selected' : '' }}>Division</option>
-                <option value="g.game_type" {{ search_by == 'g.game_type' ? 'selected' : '' }}>Type</option>
-                <option value="table_name" {{ search_by == 'table_name' ? 'selected' : '' }}>Table</option>
-            </select>
-            <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="mt-2 sm:mt-0 sm:ml-2 w-full sm:w-80 border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
-            <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
-        </form>
+<div class="text-[12px] italic">** Please fill out all fields to start your search.</div>
+<div class="mt-2 mb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+    <form method="GET" action="{{ path('app_dashboard_games') }}" class="flex flex-col sm:flex-row w-full sm:w-auto items-start sm:items-center">
+        <select name="search_by" class="border border-gray-300 rounded px-2 py-1 h-10 w-full sm:w-[12rem] dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            <option value="tournament_type_name" {{ search_by == 'tournament_type_name' ? 'selected' : '' }}>Tournament name</option>
+            <option value="t.start_day" {{ search_by == 't.start_day' ? 'selected' : '' }}>Start day</option>
+            <option value="team1_name" {{ search_by == 'team1_name' ? 'selected' : '' }}>Team</option>
+            <option value="player_one_name" {{ search_by == 'player_one_name' ? 'selected' : '' }}>Player</option>
+            <option value="g.round" {{ search_by == 'g.round' ? 'selected' : '' }}>Round</option>
+            <option value="division_name" {{ search_by == 'division_name' ? 'selected' : '' }}>Division</option>
+            <option value="g.game_type" {{ search_by == 'g.game_type' ? 'selected' : '' }}>Type</option>
+            <option value="table_name" {{ search_by == 'table_name' ? 'selected' : '' }}>Table</option>
+        </select>
+        <input type="text" name="search_value" value="{{ search_value }}" placeholder="Search" class="mt-2 sm:mt-0 sm:ml-2 w-full sm:w-[12rem] border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+        <div class="relative mt-2 sm:mt-0 sm:ml-2 w-full sm:w-[12rem]">
+            <input type="date" name="search_date" class="w-full border border-gray-300 rounded px-2 py-1 h-10 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+            <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+        </div>
+        <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
+    </form>
 
-        <a href="{{ path('app_dashboard_create_game') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600" onclick="showLoadingSpinner()">Create</a>
-    </div>
+    <a href="{{ path('app_dashboard_create_game') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
+</div>
     <div class="space-y-2">
     {% if tournament_games|length > 0 %}
         {% for games in tournament_games %}
             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[12%_12%_9%_11%_16%_15%_19%] gap-2 items-center">
-                    {# <div class="h-[45px]">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[7%_12%_12%_12%_12%_16%_24%] gap-2 items-center">
+                    <div class="flex justify-center items-center h-[45px]">
                         <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
-                    </div> #}
+                    </div>
                     <div>
                         <div class="font-bold dark:text-white">{{ games.tournament_type_name }}</div>
-                        <p><span class="font-medium">Location:</span> {{ games.location_name | default('-') }}</p>
                         <p><span class="font-medium">Start:</span>
                             {% if games.start_day %}
                                 {{ games.start_day|date('Y-m-d') | default('-') }}
@@ -46,10 +48,16 @@
                                 -
                             {% endif %}
                         </p>
+                        <p><span class="font-medium">Location:</span> {{ games.location_name | default('-') }}</p>
                     </div>
                     <div>
                         <p><span class="font-medium">Round:</span> {{ games.round | default('-') }}</p>
                         <p><span class="font-medium">Table:</span> {{ games.table_name | default('-') }}</p>
+                        <p><span class="font-medium">Status:</span> {{ games.status | default('-') }}</p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Division:</span> {{ games.division_name | default('-') }}</p>
+                        <p><span class="font-medium">Date:</span> {{ games.game_date | default('-') }}</p>
                         <p><span class="font-medium">Hour:</span> 
                             {% if games.hour %}
                                 {{ games.hour|date('h:i a') }}
@@ -59,33 +67,78 @@
                         </p>
                     </div>
                     <div>
-                        <p><span class="font-medium">Type:</span> {{ games.game_type | default('-') }}</p>
-                        <p><span class="font-medium">Division:</span> {{ games.division_name | default('-') }}</p>
-                    </div>
-                    <div>
                         <p><span class="font-medium">Team 1:</span> {{ games.team1_name | default('-') }}</p>
                         <p><span class="font-medium">Team 2:</span> {{ games.team2_name | default('-') }}</p>
+                        <p><span class="font-medium">Type:</span> {{ games.game_type | default('-') }}</p>
                     </div>
                     {% if games.game_type == 'Doubles' %}
                         <div>
                             <p><span class="font-medium">Players T1:</span> {{ games.player_one_name | default('-') }} / {{ games.player_two_name | default('-') }}</p>
+                            <p><span class="font-medium">Games:</span>
+                                {% set display_scores = [] %}
+                                {% for i in 1..7 %}
+                                    {% set set_score = attribute(games, 'player_one_set_' ~ i) %}
+                                    {% if i > 5 and set_score > 0 %}
+                                        {% set display_scores = display_scores|merge([set_score]) %}
+                                    {% endif %}
+                                    {% if i <= 5 %}
+                                        {% set display_scores = display_scores|merge([set_score]) %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ display_scores|join('-') }}
+                            </p>
                             <p><span class="font-medium">Players T2:</span> {{ games.player_three_name | default('-') }} / {{ games.player_four_name | default('-') }}</p>
+                            <p><span class="font-medium">Games:</span>
+                                {% set display_scores = [] %}
+                                {% for i in 1..7 %}
+                                    {% set set_score = attribute(games, 'player_two_set_' ~ i) %}
+                                    {% if i > 5 and set_score > 0 %}
+                                        {% set display_scores = display_scores|merge([set_score]) %}
+                                    {% endif %}
+                                    {% if i <= 5 %}
+                                        {% set display_scores = display_scores|merge([set_score]) %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ display_scores|join('-') }}
+                            </p>
                         </div>
                     {% else %}
                         <div>
                             <p><span class="font-medium">Player T1:</span> {{ games.player_one_name | default('-') }}</p>
+                            <p><span class="font-medium">Games:</span>
+                                {% set display_scores = [] %}
+                                {% for i in 1..7 %}
+                                    {% set set_score = attribute(games, 'player_one_set_' ~ i) %}
+                                    {% if i > 5 and set_score > 0 %}
+                                        {% set display_scores = display_scores|merge([set_score]) %}
+                                    {% endif %}
+                                    {% if i <= 5 %}
+                                        {% set display_scores = display_scores|merge([set_score]) %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ display_scores|join('-') }}
+                            </p>
                             <p><span class="font-medium">Player T2:</span> {{ games.player_two_name | default('-') }}</p>
+                            <p><span class="font-medium">Games:</span>
+                                {% set display_scores = [] %}
+                                {% for i in 1..7 %}
+                                    {% set set_score = attribute(games, 'player_two_set_' ~ i) %}
+                                    {% if i > 5 and set_score > 0 %}
+                                        {% set display_scores = display_scores|merge([set_score]) %}
+                                    {% endif %}
+                                    {% if i <= 5 %}
+                                        {% set display_scores = display_scores|merge([set_score]) %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ display_scores|join('-') }}
+                            </p>
                         </div>
                     {% endif %}
-                    <div>
-                        <p><span class="font-medium">Game:</span> {{ games.game_date | default('-') }}</p>
-                        <p><span class="font-medium">Status:</span> {{ games.status | default('-') }}</p>
-                    </div>
-                    <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex items-center space-x-3 justify-end relative">
+                    <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex justify-center items-center space-x-3 relative">
                         <div>
                             <label for="team_{{ games.game_id }}" class="font-medium">Payment:</label>
                             <select id="team_{{ games.game_id}}" name="team" 
-                                class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500"
                                 onchange="confirmPaymentChange({{ games.game_id }}, this.value)">
                                 {% for currentPayment in payment %}
                                     <option value="{{ currentPayment }}" {% if games.is_paid == currentPayment %}selected{% endif %}>
@@ -126,6 +179,13 @@
                                     Scoreboard
                                 </div>
                             </a>
+                            <a href="#" class="text-gray-400 text-2xl relative group">
+                                <i class="fa-solid fa-chalkboard-user"></i>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                    style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                    Umpire
+                                </div>
+                            </a>
                         {% else %}
                             <button type="button" class="text-green-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.game_id }}">
                                 <i class="fa-duotone fa-solid fa-user-check"></i>
@@ -150,17 +210,14 @@
                                     Scoreboard
                                 </div>
                             </a>
+                            <a href="{{ path('app_umpire', {id: games.game_id, display: 0}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+                                <i class="fa-solid fa-chalkboard-user"></i>
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                    style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                    Umpire
+                                </div>
+                            </a>
                         {% endif %}
-
-
-                        <a href="{{ path('app_umpire', {id: games.game_id, display: 0}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-                            <i class="fa-solid fa-chalkboard-user"></i>
-                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
-                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
-                                Umpire
-                            </div>
-                        </a>
-
                     </div>
                 </div>
 

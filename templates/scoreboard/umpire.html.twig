@@ -4,7 +4,8 @@
 
 {% if display == 0 %}
   {{ include ('scoreboard/_umpire_display_right.html.twig') }}
-{% else %}
+{% endif %}
+{% if display == 1 %}
   {{ include ('scoreboard/_umpire_display_left.html.twig') }}
 {% endif %}
 

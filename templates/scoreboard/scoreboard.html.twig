@@ -3,9 +3,10 @@
 {% block body %}
 <div id="scoreboard-container">
   <div id="scoreboard-display">
-    {% if display == 0 %}
+    {% if display == 1 %}
       {{ include('scoreboard/_scoreboard_display_right.html.twig') }}
-    {% else %}
+    {% endif %}
+    {% if display == 0 %}
       {{ include('scoreboard/_scoreboard_display_left.html.twig') }}
     {% endif %}
   </div>
@@ -32,11 +33,11 @@
         return;
       }
       const scoreboardDisplay = document.getElementById('scoreboard-display');
-      if (data.display == 0 && !scoreboardDisplay.classList.contains('right-display')) {
+      if (data.display == 1 && !scoreboardDisplay.classList.contains('right-display')) {
         scoreboardDisplay.innerHTML = `{% include 'scoreboard/_scoreboard_display_right.html.twig' %}`;
         scoreboardDisplay.classList.add('right-display');
         scoreboardDisplay.classList.remove('left-display');
-      } else if (data.display == 1 && !scoreboardDisplay.classList.contains('left-display')) {
+      } else if (data.display == 0 && !scoreboardDisplay.classList.contains('left-display')) {
         scoreboardDisplay.innerHTML = `{% include 'scoreboard/_scoreboard_display_left.html.twig' %}`;
         scoreboardDisplay.classList.add('left-display');
         scoreboardDisplay.classList.remove('right-display');

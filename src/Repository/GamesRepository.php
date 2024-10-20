@@ -26,6 +26,7 @@ class GamesRepository extends ServiceEntityRepository
      * @param string $order
      * @param string $searchBy
      * @param string $searchValue
+     * @param string $searchDate
      * @return Paginator
      */
     public function findGamesByLocationId(
@@ -35,7 +36,8 @@ class GamesRepository extends ServiceEntityRepository
         string $sortBy = 'g.division_id',
         string $order = 'ASC',
         ?string $searchBy = null,
-        ?string $searchValue = null
+        ?string $searchValue = null,
+        ?string $searchDate = null
     ) {
         $conn = $this->getEntityManager()->getConnection()->getNativeConnection();
         $sql = 'SELECT 
@@ -70,11 +72,15 @@ class GamesRepository extends ServiceEntityRepository
                 g.player_one_set_3,
                 g.player_one_set_4,
                 g.player_one_set_5,
+                g.player_one_set_6,
+                g.player_one_set_7,
                 g.player_two_set_1,
                 g.player_two_set_2,
                 g.player_two_set_3,
                 g.player_two_set_4,
                 g.player_two_set_5,
+                g.player_two_set_6,
+                g.player_two_set_7,
                 g.games_team_one,
                 g.games_team_two,
                 g.sets_team_one,
@@ -102,7 +108,7 @@ class GamesRepository extends ServiceEntityRepository
             WHERE g.location_id = :locationId';
 
         // Append search conditions based on the searchBy parameter
-        if ($searchBy && $searchValue) {
+        if ($searchBy && $searchValue && $searchDate) {
             switch ($searchBy) {
                 case 'tournament_type_name':
                     $sql .= ' AND tp.name LIKE :searchValue';
@@ -117,7 +123,7 @@ class GamesRepository extends ServiceEntityRepository
                     $sql .= ' AND g.game_date LIKE :searchValue';
                     break;
                 case 'team1_name':
-                    $sql .= ' AND team1.name LIKE :searchValue';
+                    $sql .= ' AND (team1.name LIKE :searchValue OR team2.name LIKE :searchValue)';
                     break;
                 case 'team2_name':
                     $sql .= ' AND team2.name LIKE :searchValue';
@@ -135,7 +141,7 @@ class GamesRepository extends ServiceEntityRepository
                     $sql .= ' AND ta.name LIKE :searchValue';
                     break;
                 case 'player_one_name':
-                    $sql .= ' AND p1.name LIKE :searchValue';
+                    $sql .= ' AND (p1.name LIKE :searchValue OR p2.name LIKE :searchValue)';
                     break;
                 case 'player_two_name':
                     $sql .= ' AND p2.name LIKE :searchValue';
@@ -143,6 +149,7 @@ class GamesRepository extends ServiceEntityRepository
                 default:
                     throw new \InvalidArgumentException('Invalid search criteria');
             }
+            $sql .= ' AND g.game_date LIKE :searchDate';
         }
 
         // Append ordering and limits
@@ -155,8 +162,9 @@ class GamesRepository extends ServiceEntityRepository
         $stmt->bindValue('limit', $limit, \PDO::PARAM_INT);
         $stmt->bindValue('offset', $offset, \PDO::PARAM_INT);
 
-        if ($searchBy && $searchValue) {
+        if ($searchBy && $searchValue && $searchDate) {
             $stmt->bindValue('searchValue', '%' . $searchValue . '%', \PDO::PARAM_STR);
+            $stmt->bindValue('searchDate', '%' . $searchDate . '%', \PDO::PARAM_STR);
         }
 
         // echo "SQL Query: " . $sql . "\n";
@@ -172,7 +180,8 @@ class GamesRepository extends ServiceEntityRepository
         string $sortBy = 'tournament_status',
         string $order = 'DESC',
         ?string $searchBy = null,
-        ?string $searchValue = null
+        ?string $searchValue = null,
+        ?string $searchDate = null
     ) {
         $conn = $this->getEntityManager()->getConnection()->getNativeConnection();
 
@@ -191,7 +200,7 @@ class GamesRepository extends ServiceEntityRepository
             JOIN location l ON g.location_id = l.id
             WHERE g.location_id = :locationId';
 
-        if ($searchBy && $searchValue) {
+        if ($searchBy && $searchValue && $searchDate) {
             switch ($searchBy) {
                 case 'tournament_type_name':
                     $sql .= ' AND tp.name LIKE :searchValue';
@@ -206,7 +215,7 @@ class GamesRepository extends ServiceEntityRepository
                     $sql .= ' AND g.game_date LIKE :searchValue';
                     break;
                 case 'team1_name':
-                    $sql .= ' AND team1.name LIKE :searchValue';
+                    $sql .= ' AND (team1.name LIKE :searchValue OR team2.name LIKE :searchValue)';
                     break;
                 case 'team2_name':
                     $sql .= ' AND team2.name LIKE :searchValue';
@@ -224,7 +233,7 @@ class GamesRepository extends ServiceEntityRepository
                     $sql .= ' AND ta.name LIKE :searchValue';
                     break;
                 case 'player_one_name':
-                    $sql .= ' AND p1.name LIKE :searchValue';
+                    $sql .= ' AND (p1.name LIKE :searchValue OR p2.name LIKE :searchValue)';
                     break;
                 case 'player_two_name':
                     $sql .= ' AND p2.name LIKE :searchValue';
@@ -232,14 +241,16 @@ class GamesRepository extends ServiceEntityRepository
                 default:
                     throw new \InvalidArgumentException('Invalid search criteria');
             }
+            $sql .= ' AND g.game_date LIKE :searchDate';
         }
 
         // Prepare and execute the statement
         $stmt = $conn->prepare($sql);
         $stmt->bindValue('locationId', $locationId, \PDO::PARAM_INT);
 
-        if ($searchBy && $searchValue) {
+        if ($searchBy && $searchValue && $searchDate) {
             $stmt->bindValue('searchValue', '%' . $searchValue . '%', \PDO::PARAM_STR);
+            $stmt->bindValue('searchDate', '%' . $searchDate . '%', \PDO::PARAM_STR);
         }
 
         // echo "SQL Query: " . $sql . "\n";

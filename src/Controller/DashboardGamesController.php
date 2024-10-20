@@ -35,6 +35,7 @@ class DashboardGamesController extends AbstractController
         $order = $request->query->get('order', 'ASC');
         $searchBy = $request->query->get('search_by', null);
         $searchValue = $request->query->get('search_value', null);
+        $searchDate = $request->query->get('search_date', null);
         $getCurrentLocation = $currentLocation[0]->getLocation();
         $location = $getCurrentLocation->getId();
         $offset = ($page - 1) * $limit;
@@ -46,7 +47,8 @@ class DashboardGamesController extends AbstractController
             $sortBy,
             $order,
             $searchBy,
-            $searchValue
+            $searchValue,
+            $searchDate
         );
         $totalItems = $gamesRepository->countByTournamentRegistration(
             $location,
@@ -55,7 +57,8 @@ class DashboardGamesController extends AbstractController
             $sortBy,
             $order,
             $searchBy,
-            $searchValue
+            $searchValue,
+            $searchDate
         );
         $totalPages = ceil($totalItems / $limit);
 
@@ -69,6 +72,7 @@ class DashboardGamesController extends AbstractController
             'order' => $order,
             'search_by' => $searchBy,
             'search_value' => $searchValue,
+            'search_date' => $searchDate,
             'payment' => $payment,
         ]);
     }

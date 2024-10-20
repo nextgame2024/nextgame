@@ -71,7 +71,6 @@ class DashboardTournamentController extends AbstractController
 
             $tournament['registeredUser'] = $registeredUser ? true : false;
         }
-        // dd($paginator);
         return $this->render('dashboard/tournament.html.twig', [
             'tournament_registration' => $paginator,
             'current_page' => $page,

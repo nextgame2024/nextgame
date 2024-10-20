@@ -18,7 +18,7 @@
             <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
         </form>
 
-        <a href="{{ path('app_dashboard_create_tournament') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600" onclick="showLoadingSpinner()">Create</a>
+        <a href="{{ path('app_dashboard_create_tournament') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
     </div>
     <div class="space-y-2">
     {% if tournament_registration|length > 0 %}

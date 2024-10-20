@@ -70,7 +70,7 @@
                     <div>
                         <label for="team_{{ registration.tournament_registration_id }}" class="font-medium">Team:</label>
                         <select id="team_{{ registration.tournament_registration_id }}" name="team" 
-                                class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500"
                                 onchange="confirmTeamChange({{ registration.tournament_registration_id }}, this.value)">
                             {% for team in registration.teams %}
                                 <option value="{{ team.id }}" {% if team.id == registration.team_id %}selected{% endif %}>

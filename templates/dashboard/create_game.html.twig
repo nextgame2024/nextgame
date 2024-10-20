@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="flex items-center justify-center mt-7 bg-gray-50 dark:bg-gray-900">
+    <div class="flex items-center justify-center mt-1 bg-gray-50 dark:bg-gray-900">
         <div class="w-full mx-auto">
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
                 {% for flash_error in app.flashes('verify_email_error') %}
@@ -112,7 +112,7 @@
                 </div>
 
                 <div>
-                    <button type="submit" class="block w-full shadow-sm border-transparent bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white rounded-md border p-2 mt-4 mb-2">
+                    <button type="submit" class="block w-full shadow-sm border-transparent bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-500 dark:hover:bg-yellow-600 text-black rounded-md border p-2 mt-4 mb-2">
                         {{ isEdit ? 'Update' : 'Create' }}
                     </button>
                 </div>
