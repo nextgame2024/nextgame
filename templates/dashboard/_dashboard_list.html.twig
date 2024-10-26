@@ -68,10 +68,10 @@
                             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[8%_20%_8%_9%_9%_9%_8%_8%_10%] gap-2 items-center">
                                     <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">{{ loop.index }}</span></p>
+                                        <p><span class="font-medium">{{ loop.index | default('-') }}</span></p>
                                     </div>
                                     <div class="flex justify-start items-center">
-                                        <div class="font-bold dark:text-white">{{ player.player_name }}</div>
+                                        <div class="font-bold dark:text-white">{{ player.player_name | default('-') }}</div>
                                     </div>
                                     <div class="flex justify-center items-center">
                                         <p><span class="font-medium">{{ player.played | default('0') }}</span></p>
@@ -138,10 +138,10 @@
                             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_18%_10%_15%_15%_12%_12%] gap-2 items-center">
                                     <div class="flex justify-center items-center">
-                                        <p><span class="font-medium">{{ loop.index }}</span></p>
+                                        <p><span class="font-medium">{{ loop.index | default('-') }}</span></p>
                                     </div>
                                     <div>
-                                        <div class="font-bold dark:text-white">{{ team.team_name }}</div>
+                                        <div class="font-bold dark:text-white">{{ team.team_name | default('-') }}</div>
                                     </div>
                                     <div class="flex justify-center items-center">
                                         <p><span class="font-medium">{{ team.played | default('0') }}</span></p>
@@ -170,19 +170,19 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[31%_32%_31%] gap-3 items-center">
                     <p><h2 class="text-lg font-semibold flex justify-center items-center">Teams</h2></p>
                     <div class="h-[100px]">
-                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[0].team_name }}</span></p>
+                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[0].team_name | default('-') }}</span></p>
                         <div class="flex justify-center items-center"><img src="{{ profiles ~ 'firstPlace.jpg' }}" class="flex justify-center items-center h-[100px] w-[100px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
-                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[0].player_name }}</span></p>
+                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[0].player_name | default('-') }}</span></p>
                     </div>
                     <div class="h-[100px]">
-                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[1].team_name }}</span></p>
+                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[1].team_name | default('-') }}</span></p>
                         <div class="flex justify-center items-center"><img src="{{ profiles ~ 'secondPlace.jpg' }}" class="flex justify-center items-center h-[100px] w-[100px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
-                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[1].player_name }}</span></p>
+                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[1].player_name | default('-') }}</span></p>
                     </div>
                     <div class="h-[100px]">
-                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[2].team_name }}</span></p>
+                        <p><span class="font-medium flex justify-center items-center mb-2">{{dashboard_teams[2].team_name | default('-') }}</span></p>
                         <div class="flex justify-center items-center"><img src="{{ profiles ~ 'thirdPlace.jpg' }}" class="h-[100px] w-[100px] rounded-full ring-2 ring-white dark:ring-gray" /></div>
-                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[2].player_name }}</span></p>
+                        <p><span class="font-medium flex justify-center items-center mt-2">{{dashboard_player[2].player_name | default('-') }}</span></p>
                     </div>
                     <p><h2 class="text-lg font-semibold mt-16 flex justify-center items-center">Players</h2></p>
                 </div>

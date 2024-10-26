@@ -35,6 +35,8 @@ class DashboardController extends AbstractController
         $searchByTournament = $request->query->get('search_by_tournament', null);
         $searchByDivision = $request->query->get('search_by_division', null);
 
+        $seachValues = $dashboardRepository->findActiveTournaments($locationId);
+
         if (!$searchByTournament) {
             $searchByTournament = $dashboardRepository->findTournamentWithFirstGameCreated($locationId);
         }
@@ -42,10 +44,11 @@ class DashboardController extends AbstractController
             $searchByDivision = $dashboardRepository->findDivisionWithFirstGameCreated($locationId);
         }
 
-        if ($searchByTournament && $searchByDivision) {
-            $dashboardByPlayer = $dashboardRepository->dashboardByPlayer($searchByTournament, $searchByDivision, $locationId);
-            $dashboardByTeams = $dashboardRepository->dashboardByTeams($searchByTournament, $searchByDivision, $locationId);
-            $seachValues = $dashboardRepository->findActiveTournaments($locationId);
+        if ($seachValues) {
+            if ($searchByTournament && $searchByDivision) {
+                $dashboardByPlayer = $dashboardRepository->dashboardByPlayer($searchByTournament, $searchByDivision, $locationId);
+                $dashboardByTeams = $dashboardRepository->dashboardByTeams($searchByTournament, $searchByDivision, $locationId);
+            }
 
             foreach ($seachValues as $item) {
                 $uniqueKey = $item['id'] . '-' . $item['tournament_name'];

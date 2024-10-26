@@ -202,24 +202,23 @@ class TournamentRegistrationRepository extends ServiceEntityRepository
 
         $sql = 'SELECT 
                 CASE 
-                    -- Case 1: If there are no records for the given torneo_id and division_id in the teams table,
-                    -- select a new team name from teams_names.
+                    -- Case 1: If there are no records for the given torneo_id and division_id in the teams table
                     WHEN NOT EXISTS (
                         SELECT 1 
                         FROM teams 
                         WHERE torneo_id = :tournamentId AND division_id = :divisionId
                     ) THEN (
+                        -- Select a new team name from teams_names if no teams exist
                         SELECT tn.id 
                         FROM teams_names tn
                         WHERE tn.id NOT IN (SELECT t.team_names_id FROM teams t)
                         LIMIT 1
                     )
 
-                    -- Case 2: If there are teams with the given torneo_id and division_id, check 
-                    -- tournament_registration to see if the count of players per team is less 
-                    -- than number_of_players (2). If so, return that team_id.
-                    WHEN (
-                        SELECT COUNT(*) 
+                    -- Case 2: If there are teams with the given torneo_id and division_id
+                    -- Check if the count of players per team is less than number_of_players (2)
+                    WHEN EXISTS (
+                        SELECT 1
                         FROM tournament_registration tr
                         WHERE tr.torneo_id = :tournamentId
                         AND tr.status = :currentStatus
@@ -232,9 +231,10 @@ class TournamentRegistrationRepository extends ServiceEntityRepository
                         GROUP BY tr.team_id
                         HAVING COUNT(tr.team_id) < :numberOfPlayers
                     ) THEN (
+                        -- Return the team_id if teams with less than 3 players exist
                         SELECT t.id 
                         FROM teams t
-                        WHERE t.torneo_id = :tournamentId 
+                        WHERE t.torneo_id = :tournamentId
                         AND t.division_id = :divisionId
                         AND t.id IN (
                             SELECT tr.team_id
@@ -245,8 +245,7 @@ class TournamentRegistrationRepository extends ServiceEntityRepository
                         )
                         LIMIT 1
                     )
-
-                    -- Case 3: If all teams have enough players, select a new team name from teams_names.
+                    -- Case 3: If all teams have enough players, select a new team name from teams_names
                     ELSE (
                         SELECT tn.id 
                         FROM teams_names tn
@@ -264,7 +263,6 @@ class TournamentRegistrationRepository extends ServiceEntityRepository
         $stmt->bindValue('numberOfPlayers', $numberOfPlayers, \PDO::PARAM_INT);
         $stmt->bindValue('currentStatus', $currentStatus, \PDO::PARAM_INT);
 
-        // echo "SQL Query: " . $sql . "\n";
         $stmt->execute();
 
         return $stmt->fetchColumn();

@@ -96,13 +96,13 @@
                         {% endif %}
 
                         <!-- Create Games Button -->
-                        {% if registration.status == 'Games created' %}
+                        {% if registration.status == 'Matches created' %}
                             <div class="relative group">
                                 <button type="button" class="text-green-500 text-2xl" data-modal-target="createGamesModal-{{ registration.id }}" disabled>
                                     <i class="fa-duotone fa-solid fa-table-tennis-paddle-ball"></i>
                                 </button>
                                 <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                    Games created
+                                    Match created
                                 </div>
                             </div>
                         {% else %}
@@ -111,7 +111,7 @@
                                     <i class="fa-duotone fa-solid fa-table-tennis-paddle-ball"></i>
                                 </button>
                                 <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                    Create Games
+                                    Create Matches
                                 </div>
                             </div>
                         {% endif %}
@@ -274,6 +274,7 @@
 
 </div>
 
+{% if total_pages > 0 %}
 <div class="mt-5">
     <nav>
         <ul class="inline-flex items-center -space-x-px w-full justify-center max-w-full">
@@ -313,6 +314,7 @@
         </ul>
     </nav>
 </div>
+{% endif %}
 
 <!-- Loading -->
 <script>

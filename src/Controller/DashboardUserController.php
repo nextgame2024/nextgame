@@ -19,8 +19,16 @@ class DashboardUserController extends AbstractController
 {
     #[Route('/dashboard/users', name: 'app_dashboard_users')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function dashboardUsers(Request $request, UserRepository $userRepository): Response
-    {
+    public function dashboardUsers(
+        Request $request,
+        UserRepository $userRepository,
+        UserProfileRepository $userProfile
+    ): Response {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $currentLocation = $userProfile->findLocationsByUserId($currentUser->getId());
+        $location = $currentLocation[0]->getLocation();
+
         $page = $request->query->getInt('page', 1);
         $limit = 10;
         $sortBy = $request->query->get('sort_by', 'u.email');
@@ -28,7 +36,15 @@ class DashboardUserController extends AbstractController
         $searchBy = $request->query->get('search_by', null);
         $searchValue = $request->query->get('search_value', null);
 
-        $paginator = $userRepository->findUsersWithPaginationAndSearch($page, $limit, $sortBy, $order, $searchBy, $searchValue);
+        $paginator = $userRepository->findUsersWithPaginationAndSearch(
+            $location,
+            $page,
+            $limit,
+            $sortBy,
+            $order,
+            $searchBy,
+            $searchValue
+        );
         $totalItems = count($paginator);
         $totalPages = ceil($totalItems / $limit);
 

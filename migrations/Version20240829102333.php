@@ -26,6 +26,8 @@ final class Version20240901000000 extends AbstractMigration
         $this->addSql('ALTER TABLE tournament_type CHANGE active active VARCHAR(5) NOT NULL DEFAULT \'Y\'');
 
         // Set default value for 'active' in the 'user' table
+        // ALTER TABLE user ADD active VARCHAR(5) NOT NULL DEFAULT 'Y'
+        // ALTER TABLE user_profile ADD rating VARCHAR(50) NULL
         $this->addSql('ALTER TABLE user CHANGE active active VARCHAR(5) NOT NULL DEFAULT \'Y\'');
     }
 

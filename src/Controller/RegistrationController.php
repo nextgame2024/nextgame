@@ -3,18 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
+use App\Entity\Divisions;
 use App\Security\EmailVerifier;
+use App\Form\RegistrationFormType;
+use Symfony\Component\Mime\Address;
+use App\Repository\DivisionsRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
@@ -27,13 +29,26 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        Security $security,
+        EntityManagerInterface $entityManager,
+        DivisionsRepository $divisionRepository
+    ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $userProfile = $user->getUserProfile();
+            if ($userProfile && $userProfile->getDivision() === null) {
+                $divisionRepository = $entityManager->getRepository(Divisions::class);
+                $defaultDivision = $divisionRepository->find(1);
+                if ($defaultDivision) {
+                    $userProfile->setDivision($defaultDivision);
+                }
+            }
             // encode the plain password
             $user->setPassword(
                 $userPasswordHasher->hashPassword(

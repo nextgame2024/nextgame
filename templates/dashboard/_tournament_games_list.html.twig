@@ -6,10 +6,10 @@
 </div>
 
 <div class="overflow-x-auto">
-<div class="text-[12px] italic">** Please fill out all fields to start your search.</div>
+{# <div class="text-[12px] italic">** Please fill out all fields to start your search.</div> #}
 <div class="mt-2 mb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center">
     <form method="GET" action="{{ path('app_dashboard_games') }}" class="flex flex-col sm:flex-row w-full sm:w-auto items-start sm:items-center">
-        <select name="search_by" class="border border-gray-300 rounded px-2 py-1 h-10 w-full sm:w-[12rem] dark:bg-gray-700 dark:text-white dark:border-gray-600">
+        <select name="search_by_tournament" class="border border-gray-300 rounded px-2 py-1 h-10 w-full sm:w-[12rem] dark:bg-gray-700 dark:text-white dark:border-gray-600">
             <option value="tournament_type_name" {{ search_by == 'tournament_type_name' ? 'selected' : '' }}>Tournament name</option>
             <option value="t.start_day" {{ search_by == 't.start_day' ? 'selected' : '' }}>Start day</option>
             <option value="team1_name" {{ search_by == 'team1_name' ? 'selected' : '' }}>Team</option>
@@ -35,7 +35,7 @@
     {% if tournament_games|length > 0 %}
         {% for games in tournament_games %}
             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[7%_12%_12%_12%_12%_16%_24%] gap-2 items-center">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[7%_12%_12%_12%_13%_17%_23%] gap-2 items-center">
                     <div class="flex justify-center items-center h-[45px]">
                         <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
                     </div>
@@ -58,7 +58,7 @@
                     <div>
                         <p><span class="font-medium">Division:</span> {{ games.division_name | default('-') }}</p>
                         <p><span class="font-medium">Date:</span> {{ games.game_date | default('-') }}</p>
-                        <p><span class="font-medium">Hour:</span> 
+                        <p><span class="font-medium">Time:</span> 
                             {% if games.hour %}
                                 {{ games.hour|date('h:i a') }}
                             {% else %}
@@ -135,7 +135,7 @@
                         </div>
                     {% endif %}
                     <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex justify-center items-center space-x-3 relative">
-                        <div>
+                        {# <div>
                             <label for="team_{{ games.game_id }}" class="font-medium">Payment:</label>
                             <select id="team_{{ games.game_id}}" name="team" 
                                 class="form-select mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500"
@@ -146,7 +146,7 @@
                                     </option>
                                 {% endfor %}
                             </select>
-                        </div>
+                        </div> #}
                         {% if games.status == 'Open' %}
                             <button type="button" class="text-yellow-500 text-2xl relative group" data-modal-target="deleteModal-{{ games.game_id }}">
                                 <i class="fa-duotone fa-solid fa-user-check"></i>
@@ -314,7 +314,7 @@
 </div>
 
 </div>
-
+{% if total_pages > 0 %}
 <div class="mt-5">
     <nav>
         <ul class="inline-flex items-center -space-x-px w-full justify-center max-w-full">
@@ -354,36 +354,7 @@
         </ul>
     </nav>
 </div>
-
-{# <div class="mt-4">
-    <nav>
-        <ul class="inline-flex -space-x-px">
-            {% if current_page > 1 %}
-                <li>
-                    <a href="{{ path('app_dashboard_games', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
-                </li>
-            {% else %}
-                <li>
-                    <span class="px-3 py-2 ml-0 leading-tight text-gray-300 bg-white border border-gray-300 rounded-l-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Previous</span>
-                </li>
-            {% endif %}
-            {% for page in 1..total_pages %}
-                <li>
-                    <a href="{{ path('app_dashboard_games', {page: page, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
-                </li>
-            {% endfor %}
-            {% if current_page < total_pages %}
-                <li>
-                    <a href="{{ path('app_dashboard_games', {page: current_page + 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
-                </li>
-            {% else %}
-                <li>
-                    <span class="px-3 py-2 leading-tight text-gray-300 bg-white border border-gray-300 rounded-r-lg dark:bg-gray-800 dark:border-gray-500 dark:text-gray-500">Next</span>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-</div> #}
+{% endif %}
 
 <!-- Loading -->
 <script>

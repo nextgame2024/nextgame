@@ -30,10 +30,10 @@ class DashboardGamesController extends AbstractController
 
         $currentLocation = $userProfile->findLocationsByUserId($currentUser->getId());
         $page = $request->query->getInt('page', 1);
-        $limit = 11;
+        $limit = 25;
         $sortBy = $request->query->get('sort_by', 'g.division_id');
         $order = $request->query->get('order', 'ASC');
-        $searchBy = $request->query->get('search_by', null);
+        $searchBy = $request->query->get('search_by_tournament', null);
         $searchValue = $request->query->get('search_value', null);
         $searchDate = $request->query->get('search_date', null);
         $getCurrentLocation = $currentLocation[0]->getLocation();
@@ -114,7 +114,7 @@ class DashboardGamesController extends AbstractController
             $entityManager->persist($game);
             $entityManager->flush();
 
-            $this->addFlash('success', 'The game has been successfully created!');
+            $this->addFlash('success', 'The match has been successfully created!');
 
             return $this->redirectToRoute('app_dashboard_games');
         }
@@ -153,7 +153,7 @@ class DashboardGamesController extends AbstractController
             $entityManager->persist($game);
             $entityManager->flush();
 
-            $this->addFlash('success', 'The game has been successfully updated!');
+            $this->addFlash('success', 'The match has been successfully updated!');
 
             return $this->redirectToRoute('app_dashboard_games');
         }

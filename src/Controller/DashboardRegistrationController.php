@@ -138,7 +138,7 @@ class DashboardRegistrationController extends AbstractController
         $userProfile = $currentUser->getUserProfile();
         $getDiv = $userProfile->getDivision();
 
-        if (!$getDiv) {
+        if ($getDiv->getId() == 1) {
             $this->addFlash('danger', 'The player has not yet been assigned a Division.');
             return $this->redirectToRoute('app_dashboard_tournament');
         }

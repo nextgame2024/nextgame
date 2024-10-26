@@ -27,6 +27,8 @@ class ScoreboardController extends AbstractController
 
         $gameData = $cache->get($cacheKey, function (ItemInterface $item) use ($id, $entityManager) {
             $item->expiresAfter(2);
+            $playerThreeName = '';
+            $playerFourName = '';
             $game = $entityManager->getRepository(Games::class)->find($id);
 
             if (!$game) {
@@ -38,6 +40,15 @@ class ScoreboardController extends AbstractController
             $setPlayerTwo = $game->getSetsTeamTwo();
             $playerOneName = $game->getPlayerOne()->getName();
             $playerTwoName = $game->getPlayerTwo()->getName();
+            $playerThree = $game->getPlayerThree();
+            if ($playerThree) {
+                $playerThreeName = $playerThree->getName();
+            }
+            $playerFour = $game->getPlayerFour();
+            if ($playerFour) {
+                $playerFourName = $playerFour->getName();
+            }
+            $gameType = $game->getGameType();
             $status = $game->getStatus();
 
             switch ($current_set) {
@@ -82,6 +93,9 @@ class ScoreboardController extends AbstractController
                 'setPlayerTwo' => $setPlayerTwo,
                 'playerOneName' => $playerOneName,
                 'playerTwoName' => $playerTwoName,
+                'playerThreeName' => $playerThreeName,
+                'playerFourName' => $playerFourName,
+                'gameType' => $gameType,
                 'display' => $game->getDisplay(),
                 'status' => $status,
                 'id' => $id,
@@ -107,6 +121,8 @@ class ScoreboardController extends AbstractController
         int $display,
         EntityManagerInterface $entityManager
     ): Response {
+        $playerThreeName = '';
+        $playerFourName = '';
         $game = $entityManager->getRepository(Games::class)->find($id);
 
         if (!$game) {
@@ -120,6 +136,15 @@ class ScoreboardController extends AbstractController
         $playerIdTwo = $game->getPlayerTwo()->getId();
         $playerOneName = $game->getPlayerOne()->getName();
         $playerTwoName = $game->getPlayerTwo()->getName();
+        $playerThree = $game->getPlayerThree();
+        if ($playerThree) {
+            $playerThreeName = $playerThree->getName();
+        }
+        $playerFour = $game->getPlayerFour();
+        if ($playerFour) {
+            $playerFourName = $playerFour->getName();
+        }
+        $gameType = $game->getGameType();
         $game->setDisplay($display);
 
         switch ($current_set) {
@@ -167,6 +192,9 @@ class ScoreboardController extends AbstractController
             'setPlayerTwo' => $setPlayerTwo,
             'playerOneName' => $playerOneName,
             'playerTwoName' => $playerTwoName,
+            'playerThreeName' => $playerThreeName,
+            'playerFourName' => $playerFourName,
+            'gameType' => $gameType,
             'display' => $display,
             'id' => $id,
         ]);

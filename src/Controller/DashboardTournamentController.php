@@ -144,7 +144,7 @@ class DashboardTournamentController extends AbstractController
         TournamentRepository $tournamentRepository,
         UserProfileRepository $userProfile,
         TournamentRegistrationRepository $tournamentRegistrationRepository,
-        DaysOffRepository $daysOff,
+        DaysOffRepository $daysOffRepository,
         DaysOff $daysOffEntity,
         Table $tableEntity,
         TableRepository $tableRepository,
@@ -161,14 +161,13 @@ class DashboardTournamentController extends AbstractController
         $tournamentType = $tournament->getTournamentType();
         $tournamentTypeId = $tournamentType->getid();
         $validateTeams = $tournamentRegistrationRepository->validateTeamConformation($tournamentId, $tournamentTypeId);
-
-        if (!$validateTeams) {
+        if ($validateTeams == "false") {
             $this->addFlash('danger', 'Please check the number of players and teams to ensure they meet the required specifications.');
             return $this->redirectToRoute('app_dashboard_tournament');
         }
 
         $getGames = $tournamentRegistrationRepository->getGamesByTournamentTypeAndDivision($tournamentId);
-        $getDaysOff = $daysOff->findDaysOffByLocationId($location);
+        $getDaysOff = $daysOffRepository->findDaysOffByLocationId($location);
         $getNumberOfTeams = $tournamentRegistrationRepository->getNumberOfTeamsAndDivision($tournamentId, $location);
         $getTeamIds = $tournamentRegistrationRepository->getTeamIds($tournamentId, 1);
         $tables = $tableRepository->findTablesByLocationId($location);
@@ -177,16 +176,16 @@ class DashboardTournamentController extends AbstractController
         foreach ($getNumberOfTeams as $team) {
             $gamesByDivision[] = $this->organiseTeamsRounds($team['numberOfTeams'], $team['divisionId'], $getTeamIds);
         }
-        $daysOff = [];
+        $daysOffData = [];
         foreach ($getDaysOff as $daysOffEntity) {
-            $daysOff[] = $daysOffEntity->getDate();
+            $daysOffData[] = $daysOffEntity->getDate();
         }
         $idTables = [];
         foreach ($tables as $tableEntity) {
             $idTables[] = $tableEntity->getId();
         }
         $mergedGamesByDivisionAndDate = [];
-        $gamesByDivisionAndDate = $this->assignDates($gamesByDivision, $tournament->getStartDay(), $daysOff);
+        $gamesByDivisionAndDate = $this->assignDates($gamesByDivision, $tournament->getStartDay(), $daysOffData);
 
         if ($cycles_number[0]->getValue() > 1) {
             $maxDates = [];
@@ -208,7 +207,7 @@ class DashboardTournamentController extends AbstractController
             foreach ($maxDates as $index => $dates) {
                 $newDate = \DateTime::createFromFormat('Y-m-d', $dates);
                 $filteredGamesByDivisionAndDate = $this->filterArrayByPosition($gamesByDivisionAndDate, $index);
-                array_push($gamesByDivisionAndDateCycles, $this->assignDates($filteredGamesByDivisionAndDate, $newDate, $daysOff));
+                array_push($gamesByDivisionAndDateCycles, $this->assignDates($filteredGamesByDivisionAndDate, $newDate, $daysOffData));
             }
             $gamesByDivisionAndDateCycles = $this->removeExtraPositions($gamesByDivisionAndDateCycles);
             $mergedGamesByDivisionAndDate = $this->mergeArrays($gamesByDivisionAndDate, $gamesByDivisionAndDateCycles);
@@ -277,12 +276,12 @@ class DashboardTournamentController extends AbstractController
             if (!$tournamentDetails) {
                 throw $this->createNotFoundException('Tournament not found');
             }
-            $status = 'Games created';
+            $status = 'Matches created';
             $tournamentDetails->setStatus($status);
             $entityManager->flush();
-            $this->addFlash('success', 'Games have been successfully created.');
+            $this->addFlash('success', 'Matches have been successfully created.');
         } else {
-            $this->addFlash('danger', 'The player has not yet been assigned a Division.');
+            $this->addFlash('danger', 'Matches have not been successfully created.');
         }
         return $this->redirectToRoute('app_dashboard_tournament');
     }

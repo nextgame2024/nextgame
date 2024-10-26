@@ -24,6 +24,7 @@
         </div>
       </a>
     </div>
+    {% if gameType == 'Singles' %}
     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-3/5 h-1/5 flex items-center justify-center text-white">
       <a href="{{ path('app_umpire', {id: id, display: 0}) }}" class="text-whitw text-xl lg:text-2xl relative group" onclick="showLoadingSpinner()">
         <div class="flex items-center">
@@ -32,6 +33,20 @@
         </div>
       </a>
     </div>
+    {% endif %}
+    {% if gameType == 'Doubles' %}
+    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-3/5 h-1/5 flex flex-col items-center justify-start text-white">
+      <a href="{{ path('app_umpire', {id: id, display: 0}) }}" class="text-white text-xl lg:text-2xl mt-8 relative group" onclick="showLoadingSpinner()">
+        <div class="flex items-center justify-start">
+          <span class="text-2xl lg:text-xl text-white font-bold">{{ playerThreeName }}</span>
+          <i class="fa-solid fa-circle-right ml-3 text-3xl lg:text-5xl"></i>
+        </div>
+        <div class="flex items-center justify-start">
+          <span class="text-2xl lg:text-xl text-white font-bold">{{ playerFourName }}</span>
+        </div>
+      </a>
+    </div>
+    {% endif %}
     <div class="h-full flex items-center justify-center">
       <span class="text-9xl md:text-[30vw] lg:text-[30vw] ml-10 mt-8 text-yellow-500 font-bold" id="playerTwo">{{ pointsPlayerTwo }}</span>
     </div>
@@ -47,6 +62,7 @@
     <div class="absolute top-0 left-0 w-1/5 h-1/4 bg-yellow-500 flex items-center justify-center text-white border-4 border-black mt-2 ml-2">
       <span class="text-6xl md:text-[12vw] lg:text-[13vw] text-black font-bold" id="setsPlayerOne">{{ setPlayerOne }}</span>
     </div>
+    {% if gameType == 'Singles' %}
     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-3/5 h-1/5 flex items-center justify-center text-white">
       <a href="{{ path('app_umpire', {id: id, display: 0}) }}" class="text-white text-xl lg:text-2xl relative group" onclick="showLoadingSpinner()">
         <div class="flex items-center">
@@ -55,6 +71,20 @@
         </div>
       </a>
     </div>
+    {% endif %}
+    {% if gameType == 'Doubles' %}
+    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-3/5 h-1/5 flex flex-col items-center justify-start text-white">
+      <a href="{{ path('app_umpire', {id: id, display: 0}) }}" class="text-white text-xl lg:text-2xl mt-8 relative group" onclick="showLoadingSpinner()">
+        <div class="flex items-center justify-end">
+          <i class="fa-solid fa-circle-left mr-3 text-3xl lg:text-5xl"></i>
+          <span class="text-2xl lg:text-xl text-white font-bold">{{ playerOneName }}</span>
+        </div>
+        <div class="flex items-center justify-end">
+          <span class="text-2xl lg:text-xl text-white font-bold">{{ playerTwoName }}</span>
+        </div>
+      </a>
+    </div>
+    {% endif %}
     <div class="absolute mt-8 inset-y-1/2 right-0 transform -translate-y-1/2 w-1/5 h-1/5 flex flex-col items-center justify-center gap-5">
       <a href="#" class="text-white text-xl lg:text-2xl relative group" onclick="updateScore({{ id }}, {{ playerIdOne }})">
         <div class="flex items-center">

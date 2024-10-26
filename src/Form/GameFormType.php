@@ -69,7 +69,7 @@ class GameFormType extends AbstractType
                 'query_builder' => function (EntityRepository $er) use ($userLocation) {
                     return $er->createQueryBuilder('d')
                         ->join('d.torneo', 'l')
-                        ->where('l.id = :userLocation')
+                        ->where('l.location = :userLocation')
                         ->setParameter('userLocation', $userLocation);
                 },
             ])

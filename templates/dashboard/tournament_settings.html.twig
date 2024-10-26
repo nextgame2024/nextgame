@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block bread %}
+→ Settings
+{% endblock %}
+
+{% block body %}
+{{ include ('dashboard/_dashboard_tabs.html.twig') }}
+{{ include ('dashboard/_tournament_settings_list.html.twig') }}
+{% endblock %}

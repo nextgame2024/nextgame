@@ -19,6 +19,10 @@ class TeamsNames
     #[ORM\Column(length: 5)]
     private ?string $active = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Location $location = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +48,18 @@ class TeamsNames
     public function setActive(string $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }

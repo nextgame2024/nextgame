@@ -38,10 +38,19 @@
 
         {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_games', classes: 'ml-2' } %}
             {% block content %}
-                | Games 
+                | Matches 
             {% endblock %}
             {% block path %}
             {{ path('app_dashboard_games') }}
+            {% endblock %}
+        {% endembed %}
+
+        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_settings', classes: 'ml-2' } %}
+            {% block content %}
+                | Settings 
+            {% endblock %}
+            {% block path %}
+            {{ path('app_dashboard_settings') }}
             {% endblock %}
         {% endembed %}
 

@@ -7,11 +7,23 @@
     <div class="absolute top-0 right-0 w-[20%] h-[23%] bg-yellow-500 flex items-center justify-center text-white mt-2 mr-3">
       <span class="text-[12vw] text-black font-bold" id="setPlayerTwo">{{ setPlayerTwo }}</span>
     </div>
+    {% if gameType == 'Singles' %}
     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[60%] h-[15%] mt-5 flex items-center justify-start text-white">
       <div class="flex items-center">
         <span class="text-[4vw] md:text-[3vw] text-yellow-500 font-bold">{{ playerTwoName }}</span>
       </div>
     </div>
+    {% endif %}
+    {% if gameType == 'Doubles' %}
+    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[60%] h-[15%] mt-5 flex flex-col items-center justify-start text-white">
+      <div class="flex items-center">
+        <span class="text-[4vw] md:text-[3vw] text-yellow-500 font-bold">{{ playerThreeName }}</span>
+      </div>
+      <div class="flex items-center">
+        <span class="text-[4vw] md:text-[3vw] text-yellow-500 font-bold">{{ playerFourName }}</span>
+      </div>
+    </div>
+    {% endif %}
     <div class="h-full flex items-center justify-center mt-5">
       <span class="text-[34vw] md:text-[44vw] lg:text-[35vw] text-yellow-500 font-bold" id="playerTwo">{{ playerTwo }}</>
     </div>
@@ -21,11 +33,23 @@
     <div class="absolute top-0 left-0 w-[20%] h-[23%] bg-yellow-500 flex items-center justify-center text-white mt-2 ml-3">
       <span class="text-[12vw] text-black font-bold" id="setPlayerOne">{{ setPlayerOne }}</span>
     </div>
+    {% if gameType == 'Singles' %}
     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[60%] h-[15%] ml-4 mt-5 flex items-center justify-center text-white">
       <div class="flex items-center">
         <span class="text-[4vw] md:text-[3vw] text-yellow-500 font-bold">{{ playerOneName }}</span>
       </div>
     </div>
+    {% endif %}
+    {% if gameType == 'Doubles' %}
+    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[60%] h-[15%] mt-5 flex flex-col items-center justify-start text-white">
+      <div class="flex items-center">
+        <span class="text-[4vw] md:text-[3vw] text-yellow-500 font-bold">{{ playerOneName }}</span>
+      </div>
+      <div class="flex items-center">
+        <span class="text-[4vw] md:text-[3vw] text-yellow-500 font-bold">{{ playerTwoName }}</span>
+      </div>
+    </div>
+    {% endif %}
     <div class="h-full flex items-center justify-center mt-5">
       <span class="text-[34vw] md:text-[44vw] lg:text-[35vw] text-yellow-500 font-bold" id="playerOne">{{ playerOne }}</span>
     </div>

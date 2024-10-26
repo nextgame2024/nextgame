@@ -107,8 +107,8 @@ class GamesRepository extends ServiceEntityRepository
             JOIN location l ON g.location_id = l.id
             WHERE g.location_id = :locationId';
 
-        // Append search conditions based on the searchBy parameter
-        if ($searchBy && $searchValue && $searchDate) {
+        // Append search conditions based on the searchBy and searchValue parameters
+        if ($searchBy && $searchValue) {
             switch ($searchBy) {
                 case 'tournament_type_name':
                     $sql .= ' AND tp.name LIKE :searchValue';
@@ -149,6 +149,10 @@ class GamesRepository extends ServiceEntityRepository
                 default:
                     throw new \InvalidArgumentException('Invalid search criteria');
             }
+        }
+
+        // Append game_date condition if searchDate is provided
+        if ($searchDate) {
             $sql .= ' AND g.game_date LIKE :searchDate';
         }
 
@@ -162,16 +166,18 @@ class GamesRepository extends ServiceEntityRepository
         $stmt->bindValue('limit', $limit, \PDO::PARAM_INT);
         $stmt->bindValue('offset', $offset, \PDO::PARAM_INT);
 
-        if ($searchBy && $searchValue && $searchDate) {
+        if ($searchBy && $searchValue) {
             $stmt->bindValue('searchValue', '%' . $searchValue . '%', \PDO::PARAM_STR);
+        }
+        if ($searchDate) {
             $stmt->bindValue('searchDate', '%' . $searchDate . '%', \PDO::PARAM_STR);
         }
 
-        // echo "SQL Query: " . $sql . "\n";
         // Execute and return results
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
 
     public function countByTournamentRegistration(
         int $locationId,
@@ -200,7 +206,8 @@ class GamesRepository extends ServiceEntityRepository
             JOIN location l ON g.location_id = l.id
             WHERE g.location_id = :locationId';
 
-        if ($searchBy && $searchValue && $searchDate) {
+        // Append search conditions based on searchBy and searchValue
+        if ($searchBy && $searchValue) {
             switch ($searchBy) {
                 case 'tournament_type_name':
                     $sql .= ' AND tp.name LIKE :searchValue';
@@ -241,6 +248,10 @@ class GamesRepository extends ServiceEntityRepository
                 default:
                     throw new \InvalidArgumentException('Invalid search criteria');
             }
+        }
+
+        // Append game_date condition if searchDate is provided
+        if ($searchDate) {
             $sql .= ' AND g.game_date LIKE :searchDate';
         }
 
@@ -248,16 +259,18 @@ class GamesRepository extends ServiceEntityRepository
         $stmt = $conn->prepare($sql);
         $stmt->bindValue('locationId', $locationId, \PDO::PARAM_INT);
 
-        if ($searchBy && $searchValue && $searchDate) {
+        if ($searchBy && $searchValue) {
             $stmt->bindValue('searchValue', '%' . $searchValue . '%', \PDO::PARAM_STR);
+        }
+        if ($searchDate) {
             $stmt->bindValue('searchDate', '%' . $searchDate . '%', \PDO::PARAM_STR);
         }
 
-        // echo "SQL Query: " . $sql . "\n";
         $stmt->execute();
 
         return $stmt->fetchColumn();
     }
+
 
 
     public function createGamesByTournamentType(array $games)
@@ -321,7 +334,7 @@ class GamesRepository extends ServiceEntityRepository
                     $stmt->execute();
                 }
 
-                if ($players == 2 && $count == 2) {
+                if ($players == 2 && $count == 3) {
                     $stmt->bindValue('tournament_id', $game['tournament_id']);
                     $stmt->bindValue('team_id_1', $game['team_id_1']);
                     $stmt->bindValue('table', $game['table']);

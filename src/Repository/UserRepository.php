@@ -40,15 +40,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      *
      * @return QueryBuilder
      */
-    public function createUserWithProfileQueryBuilder(string $sortBy = 'u.email', string $order = 'ASC'): QueryBuilder
-    {
+    public function createUserWithProfileQueryBuilder(
+        $location,
+        string $sortBy = 'u.email',
+        string $order = 'ASC'
+    ): QueryBuilder {
         return $this->createQueryBuilder('u')
             ->leftJoin('u.userProfile', 'p')
             ->addSelect('p')
             ->leftJoin('p.division', 'd')
             ->addSelect('d')
             ->where('u.active = :active')
+            ->andWhere('p.location = :location')
             ->setParameter('active', 'Y')
+            ->setParameter('location', $location)
             ->orderBy($sortBy, $order);
     }
 
@@ -63,9 +68,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      * @param string $searchValue
      * @return Paginator
      */
-    public function findUsersWithPaginationAndSearch(int $page, int $limit, string $sortBy = 'u.email', string $order = 'ASC', ?string $searchBy = null, ?string $searchValue = null): Paginator
-    {
-        $queryBuilder = $this->createUserWithProfileQueryBuilder($sortBy, $order)
+    public function findUsersWithPaginationAndSearch(
+        $location,
+        int $page,
+        int $limit,
+        string $sortBy = 'u.email',
+        string $order = 'ASC',
+        ?string $searchBy = null,
+        ?string $searchValue = null
+    ): Paginator {
+        $queryBuilder = $this->createUserWithProfileQueryBuilder($location, $sortBy, $order)
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit);
 
