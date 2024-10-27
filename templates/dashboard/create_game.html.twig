@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Game → Create{% endblock %}
+{% block title %}Match → Create{% endblock %}
 
 {% block bread %}
-→ <a href="{{ path('app_dashboard_games') }}">Game</a> → Create
+→ <a href="{{ path('app_dashboard_games') }}">Match</a> → Create
 {% endblock %}
 
 {% block body %}
@@ -18,7 +18,7 @@
 
                 {{ form_start(form) }}
                 <div class="text-xl">
-                    Create a game
+                    Create match
                 </div>
                 <div class="text-gray-500 mb-4 pb-4 border-b border-gray-300">
                     Complete the requested information

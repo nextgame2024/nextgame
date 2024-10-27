@@ -334,7 +334,7 @@
 
             {% for page in max(1, current_page - 2)..min(total_pages, current_page + 2) %}
                 <li>
-                    <a href="{{ path('app_dashboard_games', {page: page, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
+                    <a href="{{ path('app_dashboard_games', {page: page, sort_by: sort_by, order: order, search_by_tournament: search_by, search_value: search_value, search_date: search_date}) }}" class="px-3 py-2 leading-tight {{ current_page == page ? 'bg-gray-200 dark:bg-gray-500 dark:border-gray-500' : 'bg-white dark:bg-gray-800 dark:border-gray-500' }} border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:hover:text-white dark:hover:bg-gray-400" onclick="showLoadingSpinner()">{{ page }}</a>
                 </li>
             {% endfor %}
 
@@ -344,7 +344,7 @@
 
             {% if current_page < total_pages %}
                 <li>
-                    <a href="{{ path('app_dashboard_games', {page: current_page + 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
+                    <a href="{{ path('app_dashboard_games', {page: current_page + 1, sort_by: sort_by, order: order, search_by_tournament: search_by, search_value: search_value, search_date: search_date}) }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Next</a>
                 </li>
             {% else %}
                 <li>

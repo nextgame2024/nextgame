@@ -21,7 +21,7 @@ class Games
     private ?Teams $team = null;
 
     #[ORM\ManyToOne]
-    private ?Table $table_number = null;
+    private ?TableType $table_number = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $game_type = null;
@@ -152,12 +152,12 @@ class Games
         return $this;
     }
 
-    public function getTableNumber(): ?Table
+    public function getTableNumber(): ?TableType
     {
         return $this->table_number;
     }
 
-    public function setTableNumber(?Table $table_number): static
+    public function setTableNumber(?TableType $table_number): static
     {
         $this->table_number = $table_number;
 

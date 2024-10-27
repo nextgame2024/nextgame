@@ -24,7 +24,7 @@
     {% if tournament_registration|length > 0 %}
         {% for registration in tournament_registration %}
             <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_14%_12%_12%_15%_12%_12%_9%] gap-3 items-center">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[5%_13%_7%_8%_12%_12%_12%_12%_9%] gap-3 items-center">
                     <div class="h-[45px]">
                         <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
                     </div>
@@ -35,6 +35,9 @@
                         <p><span class="font-medium">Location:</span> {{ registration.location | default('-') }}</p>
                     </div>
                     <div>
+                        <p><span class="font-medium">Teams of:</span> {{ registration.players | default('-') }}</p>
+                    </div>
+                    <div>
                         <p><span class="font-medium">Hour:</span> 
                             {% if registration.hour %}
                                 {{ registration.hour|date('h:i a') }}
@@ -42,9 +45,6 @@
                                 -
                             {% endif %}
                         </p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Status:</span> {{ registration.status | default('-') }}</p>
                     </div>
                     <div>
                         <p><span class="font-medium">Start:</span>
@@ -63,6 +63,9 @@
                                 -
                             {% endif %}
                         </p>
+                    </div>
+                    <div>
+                        <p><span class="font-medium">Status:</span> {{ registration.status | default('-') }}</p>
                     </div>
                     <div class="flex items-center space-x-3 justify-end">
                         <!-- Registered User Button -->

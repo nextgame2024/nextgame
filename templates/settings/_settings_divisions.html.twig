@@ -1,0 +1,24 @@
+<div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[10%_20%_30%_15%_15%] gap-2 items-center">
+        <div class="flex justify-center items-center h-[45px]">
+            <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
+        </div>
+        <div>
+            <p><span class="font-medium">ID:</span> {{ settings.id | default('-') }}</p>
+        </div>
+        <div>
+            <p><span class="font-medium">Name:</span> {{ settings.name | default('-') }}</p>
+        </div>
+        <div>
+            <p><span class="font-medium">Active:</span> {{ settings.active | default('-') }}</p>
+        </div>
+        <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex justify-center items-center space-x-3 relative">            
+            <a href="{{ path('app_dashboard_settings_edit_divisions', {id: settings.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
+            <i class="fas fa-pencil-alt"></i>
+            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                Edit
+            </div>
+            </a>
+    </div>
+</div>

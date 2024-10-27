@@ -96,7 +96,7 @@ class GamesRepository extends ServiceEntityRepository
             FROM games g
             JOIN tournament t ON g.tournament_id = t.id
             JOIN tournament_type tp ON t.tournament_type_id = tp.id
-            JOIN `table` ta ON g.table_number_id = ta.id
+            JOIN `table_type` ta ON g.table_number_id = ta.id
             JOIN teams team1 ON g.team_id = team1.id
             JOIN teams team2 ON g.team2_id = team2.id
             JOIN user_profile p1 ON g.player_one_id = p1.id
@@ -195,7 +195,7 @@ class GamesRepository extends ServiceEntityRepository
             FROM games g
             JOIN tournament t ON g.tournament_id = t.id
             JOIN tournament_type tp ON t.tournament_type_id = tp.id
-            JOIN `table` ta ON g.table_number_id = ta.id
+            JOIN `table_type` ta ON g.table_number_id = ta.id
             JOIN teams team1 ON g.team_id = team1.id
             JOIN teams team2 ON g.team2_id = team2.id
             JOIN user_profile p1 ON g.player_one_id = p1.id

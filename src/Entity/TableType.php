@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\TableRepository;
+use App\Repository\TableTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TableRepository::class)]
-#[ORM\Table(name: '`table`')]
-class Table
+#[ORM\Entity(repositoryClass: TableTypeRepository::class)]
+#[ORM\Table(name: '`table_type`')]
+class TableType
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

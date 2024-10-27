@@ -40,7 +40,7 @@ class SettingsRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection()->getNativeConnection();
         switch ($searchBy) {
             case 'tournament_type':
-                $sortBy = 'name';
+                $sortBy = 'id';
                 break;
             case 'days_off':
                 $sortBy = 'date';
@@ -48,8 +48,8 @@ class SettingsRepository extends ServiceEntityRepository
             case 'divisions':
                 $sortBy = 'id';
                 break;
-            case 'table':
-                $sortBy = 'name';
+            case 'table_type':
+                $sortBy = 'id';
                 break;
             case 'parameters':
                 $sortBy = 'description';

@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Table;
 use App\Entity\DaysOff;
+use App\Entity\TableType;
 use App\Entity\Tournament;
 use App\Form\TournamentFormType;
 use App\Repository\GamesRepository;
 use App\Repository\TableRepository;
 use App\Repository\DaysOffRepository;
+use App\Repository\TableTypeRepository;
 use App\Repository\ParametersRepository;
 use App\Repository\TournamentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -146,8 +148,8 @@ class DashboardTournamentController extends AbstractController
         TournamentRegistrationRepository $tournamentRegistrationRepository,
         DaysOffRepository $daysOffRepository,
         DaysOff $daysOffEntity,
-        Table $tableEntity,
-        TableRepository $tableRepository,
+        TableType $tableEntity,
+        TableTypeRepository $tableRepository,
         GamesRepository $gamesRepository,
         ParametersRepository $parametersRepository
     ): Response {

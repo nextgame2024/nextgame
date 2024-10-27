@@ -7,6 +7,7 @@ use App\Entity\Table;
 use App\Entity\Teams;
 use App\Entity\Location;
 use App\Entity\Divisions;
+use App\Entity\TableType;
 use App\Entity\Tournament;
 use App\Entity\UserProfile;
 use App\Entity\TournamentType;
@@ -86,7 +87,7 @@ class GameFormType extends AbstractType
                 },
             ])
             ->add('table_number', EntityType::class, [
-                'class' => Table::class,
+                'class' => TableType::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a table',
                 'required' => true,

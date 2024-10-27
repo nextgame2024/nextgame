@@ -12,140 +12,42 @@
             <option value="tournament_type" {{ search_by == 'tournament_type' ? 'selected' : '' }}>Tournaments</option>
             <option value="days_off" {{ search_by == 'days_off' ? 'selected' : '' }}>Days Off</option>
             <option value="divisions" {{ search_by == 'divisions' ? 'selected' : '' }}>Divisions</option>
-            <option value="table" {{ search_by == 'table' ? 'selected' : '' }}>Tables</option>
+            <option value="table_type" {{ search_by == 'table_type' ? 'selected' : '' }}>Tables</option>
             <option value="parameters" {{ search_by == 'parameters' ? 'selected' : '' }}>Parameters</option>
         </select>
         <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
     </form>
-
-    <a href="{{ path('app_dashboard_create_game') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
+    {% if setting_type == 1 %}
+        <a href="{{ path('app_dashboard_settings_tournament') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
+    {% endif %}
+    {% if setting_type == 2 %}
+        <a href="{{ path('app_dashboard_settings_days_off') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
+    {% endif %}
+    {% if setting_type == 3 %}
+        <a href="{{ path('app_dashboard_settings_divisions') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
+    {% endif %}
+    {% if setting_type == 4 %}
+        <a href="{{ path('app_dashboard_settings_table_type') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
+    {% endif %}
 </div>
 <div class="space-y-2">
     {% if tournament_settings|length > 0 %}
         {% for settings in tournament_settings %}
-            {% if setting_type == 1 or setting_type == 3 or setting_type == 4 %}
-            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[10%_20%_30%_15%_15%] gap-2 items-center">
-                    <div class="flex justify-center items-center h-[45px]">
-                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
-                    </div>
-                    <div>
-                        <p><span class="font-medium">ID:</span> {{ settings.id | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Name:</span> {{ settings.name | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Active:</span> {{ settings.active | default('-') }}</p>
-                    </div>
-                    <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex justify-center items-center space-x-3 relative">                            
-                        <a href="{{ path('app_dashboard_edit_game', {id: settings.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-                            <i class="fas fa-pencil-alt"></i>
-                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
-                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
-                                Edit
-                            </div>
-                        </a>
-                </div>
-            </div>
-        {% endif %}
-        {% if setting_type == 2 %}
-            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[10%_20%_30%_15%_15%] gap-2 items-center">
-                    <div class="flex justify-center items-center h-[45px]">
-                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
-                    </div>
-                    <div>
-                        <p><span class="font-medium">ID:</span> {{ settings.id | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Date:</span> {{ settings.date | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Description:</span> {{ settings.description | default('-') }}</p>
-                    </div>
-                    <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex justify-center items-center space-x-3 relative">                            
-                        <a href="{{ path('app_dashboard_edit_game', {id: settings.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-                            <i class="fas fa-pencil-alt"></i>
-                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
-                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
-                                Edit
-                            </div>
-                        </a>
-                </div>
-            </div>
-        {% endif %}
-                {% if setting_type == 5 %}
-            <div class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-2 shadow-md w-full">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[10%_20%_30%_15%_15%] gap-2 items-center">
-                    <div class="flex justify-center items-center h-[45px]">
-                        <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
-                    </div>
-                    <div>
-                        <p><span class="font-medium">ID:</span> {{ settings.id | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Description:</span> {{ settings.description | default('-') }}</p>
-                    </div>
-                    <div>
-                        <p><span class="font-medium">Value:</span> {{ settings.value | default('-') }}</p>
-                    </div>
-                    <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex justify-center items-center space-x-3 relative">                            
-                        <a href="{{ path('app_dashboard_edit_game', {id: settings.id}) }}" class="text-yellow-500 text-2xl relative group" onclick="showLoadingSpinner()">
-                            <i class="fas fa-pencil-alt"></i>
-                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
-                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
-                                Edit
-                            </div>
-                        </a>
-                </div>
-            </div>
-        {% endif %}
-
-                <!-- Modal -->
-                {# <div id="deleteModal-{{ settings.id }}" class="hidden fixed z-10 inset-0 overflow-y-auto">
-                    <div class="flex items-center justify-center min-h-screen px-4 text-center">
-                        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-xl relative dark:bg-gray-700">
-                            <h2 class="text-lg font-semibold mb-4">Are you sure you want to continue?</h2>
-                            <p class="mb-6">Please verify and confirm the action.</p>
-                            <form method="post" action="{{ path('app_dashboard_settings', {id: settings.id}) }}" onsubmit="showLoadingSpinner('{{ settings.id }}')">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ settings.id) }}">
-                                <div class="flex justify-center">
-                                    <button type="submit" id="deleteBtn-{{ settings.id }}" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded  mr-2">Submit</button>
-                                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded" onclick="closeModal('deleteModal-{{ settings.id }}')">Cancel</button>
-                                </div>
-                            </form>
-                            <div id="spinner-{{ settings.id }}" class="hidden absolute inset-0 flex items-center justify-center z-20 bg-white bg-opacity-75">
-                                <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div> #}
-
-                <script>
-                    document.querySelectorAll('[data-modal-target]').forEach(button => {
-                        button.addEventListener('click', function() {
-                            const modal = document.getElementById(this.getAttribute('data-modal-target'));
-                            modal.classList.remove('hidden');
-                        });
-                    });
-
-                    function closeModal(modalId) {
-                        document.getElementById(modalId).classList.add('hidden');
-                    }
-
-                    function showLoadingSpinner(userId) {
-                        const modalContent = document.querySelector('#deleteModal-' + userId + ' > .flex > .relative');
-                        modalContent.classList.add('hidden');
-                        const spinner = document.getElementById('spinner-' + userId);
-                        spinner.classList.remove('hidden');
-                        const modal = document.getElementById('deleteModal-' + userId);
-                        modal.classList.add('hidden');
-                    }
-                </script>
+            {% if setting_type == 1 %}
+                {{ include('settings/_settings_tournament.html.twig') }}
+            {% endif %}
+            {% if setting_type == 2 %}
+                {{ include('settings/_settings_daysOff.html.twig') }}
+            {% endif %}
+            {% if setting_type == 3 %}
+                {{ include('settings/_settings_divisions.html.twig') }}
+            {% endif %}
+            {% if setting_type == 4 %}
+                {{ include('settings/_settings_tables.html.twig') }}
+            {% endif %}
+            {% if setting_type == 5 %}
+                {{ include('settings/_settings_parameters.html.twig') }}
+            {% endif %}
             </div>
         {% endfor %}
     {% else %}
@@ -159,7 +61,7 @@
         <ul class="inline-flex items-center -space-x-px w-full justify-center max-w-full">
             {% if current_page > 1 %}
                 <li>
-                    <a href="{{ path('app_dashboard_settings', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by, search_value: search_value}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
+                    <a href="{{ path('app_dashboard_settings', {page: current_page - 1, sort_by: sort_by, order: order, search_by: search_by}) }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-500 dark:text-white dark:hover:bg-gray-700" onclick="showLoadingSpinner()">Previous</a>
                 </li>
             {% else %}
                 <li>
@@ -195,7 +97,6 @@
 </div>
 {% endif %}
 
-<!-- Loading -->
 <script>
     function showLoadingSpinner() {
         document.getElementById('loading-spinner').style.display = 'flex';
