@@ -54,6 +54,9 @@ class SettingsRepository extends ServiceEntityRepository
             case 'parameters':
                 $sortBy = 'description';
                 break;
+            case 'directors':
+                $sortBy = 'name';
+                break;
             default:
                 $sortBy = 'name';
         }

@@ -14,6 +14,7 @@
             <option value="divisions" {{ search_by == 'divisions' ? 'selected' : '' }}>Divisions</option>
             <option value="table_type" {{ search_by == 'table_type' ? 'selected' : '' }}>Tables</option>
             <option value="parameters" {{ search_by == 'parameters' ? 'selected' : '' }}>Parameters</option>
+            <option value="directors" {{ search_by == 'directors' ? 'selected' : '' }}>Directors</option>
         </select>
         <button type="submit" class="mt-2 sm:mt-0 sm:ml-2 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600" onclick="showLoadingSpinner()">Search</button>
     </form>
@@ -28,6 +29,9 @@
     {% endif %}
     {% if setting_type == 4 %}
         <a href="{{ path('app_dashboard_settings_table_type') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
+    {% endif %}
+        {% if setting_type == 6 %}
+        <a href="{{ path('app_dashboard_settings_directors') }}" class="mt-2 sm:mt-0 bg-yellow-500 text-white py-2 px-4 rounded h-10 hover:bg-yellow-600 flex items-center justify-center" onclick="showLoadingSpinner()">Create</a>
     {% endif %}
 </div>
 <div class="space-y-2">
@@ -47,6 +51,9 @@
             {% endif %}
             {% if setting_type == 5 %}
                 {{ include('settings/_settings_parameters.html.twig') }}
+            {% endif %}
+            {% if setting_type == 6 %}
+                {{ include('settings/_settings_directors.html.twig') }}
             {% endif %}
             </div>
         {% endfor %}

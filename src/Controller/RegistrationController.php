@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Divisions;
+use App\Entity\TemporaryRatingCentralId;
 use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
 use Symfony\Component\Mime\Address;
 use App\Repository\DivisionsRepository;
+use App\Repository\TemporaryRatingCentralIdRepository;
+use App\Repository\UserProfileRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -33,15 +36,27 @@ class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         Security $security,
+        TemporaryRatingCentralIdRepository $temporaryRatingCentralIdRepository,
         EntityManagerInterface $entityManager,
         DivisionsRepository $divisionRepository
     ): Response {
         $user = new User();
+        $temporaryId = new TemporaryRatingCentralId();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $userProfile = $user->getUserProfile();
+            $userProfile->setRegistered('N');
+            $location = $userProfile->getLocation();
+            $temporaryRatingsCentralId = $temporaryRatingCentralIdRepository->findMaxTemporaryIdByLocation(
+                $location->getId()
+            );
+            $userProfile->setRatingCentralId(($temporaryRatingsCentralId * -1) - 1);
+
+            $temporaryId->setTemporaryId($temporaryRatingsCentralId + 1);
+            $temporaryId->setLocation($location);
+
             if ($userProfile && $userProfile->getDivision() === null) {
                 $divisionRepository = $entityManager->getRepository(Divisions::class);
                 $defaultDivision = $divisionRepository->find(1);
@@ -58,6 +73,7 @@ class RegistrationController extends AbstractController
             );
 
             $entityManager->persist($user);
+            $entityManager->persist($temporaryId);
             $entityManager->flush();
 
             try {

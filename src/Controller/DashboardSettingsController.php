@@ -2,27 +2,22 @@
 
 namespace App\Controller;
 
-use DateTime;
 use App\Entity\User;
-use App\Entity\Games;
 use App\Entity\DaysOff;
+use App\Entity\Directors;
 use App\Entity\Divisions;
-use App\Entity\Parameters;
 use App\Entity\TableType;
-use App\Form\GameFormType;
+use App\Entity\Parameters;
 use App\Form\DaysOffFormType;
 use App\Entity\TournamentType;
+use App\Form\DirectorFormType;
 use App\Form\DivisionsFormType;
-use App\Form\ParametersFormType;
 use App\Form\TableTypeFormType;
-use App\Repository\GamesRepository;
-use App\Repository\TeamsRepository;
+use App\Form\ParametersFormType;
 use App\Form\TournamentTypeFormType;
 use App\Repository\SettingsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UserProfileRepository;
-use Doctrine\DBAL\ParameterType;
-use Doctrine\ORM\Query\Parameter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -67,6 +62,9 @@ class DashboardSettingsController extends AbstractController
                 break;
             case 'parameters':
                 $settingType = 5;
+                break;
+            case 'directors':
+                $settingType = 6;
                 break;
             default:
                 $settingType = 'name';
@@ -235,6 +233,81 @@ class DashboardSettingsController extends AbstractController
         return $this->render('dashboard/create_tables.html.twig', [
             'form' => $form->createView(),
             'isEdit' => false,
+        ]);
+    }
+
+    #[Route('/dashboard/settings-directors', name: 'app_dashboard_settings_directors')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function createSettingsDirectors(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserProfileRepository $userProfile
+    ): Response {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $currentLocation = $userProfile->findLocationsByUserId($currentUser->getId());
+
+        $director = new Directors();
+        $userLocation = $currentLocation[0]->getLocation() ?? null;
+        $form = $this->createForm(DirectorFormType::class, $director, [
+            'user_location' => $userLocation,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($director);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'The director has been successfully created!');
+
+            $searchBy = 'directors';
+            $url = $this->generateUrl('app_dashboard_settings') . '?search_by=' . urlencode($searchBy);
+
+            return $this->redirect($url);
+        }
+
+        return $this->render('dashboard/create_directors.html.twig', [
+            'form' => $form->createView(),
+            'isEdit' => false,
+        ]);
+    }
+
+    #[Route('/dashboard/settings-edit-directors/{id}', name: 'app_dashboard_settings_edit_directors')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function editSettingsDirectors(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserProfileRepository $userProfile
+    ): Response {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $currentLocation = $userProfile->findLocationsByUserId($currentUser->getId());
+        $userLocation = $currentLocation[0]->getLocation() ?? null;
+
+        $game = $entityManager->getRepository(Directors::class)->find($id);
+
+        if (!$game) {
+            throw $this->createNotFoundException('Settings not found.');
+        }
+
+        $form = $this->createForm(DirectorFormType::class, $game, [
+            'user_location' => $userLocation,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($game);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'The director has been successfully updated!');
+
+            return $this->redirectToRoute('app_dashboard_settings');
+        }
+
+        return $this->render('dashboard/create_directors.html.twig', [
+            'form' => $form->createView(),
+            'isEdit' => true,
         ]);
     }
 

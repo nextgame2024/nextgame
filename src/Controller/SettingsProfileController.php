@@ -81,11 +81,6 @@ class SettingsProfileController extends AbstractController
                 $safeFilename = $slugger->slug($originalFileName);
                 $newFileName = $safeFilename . '-' . uniqid() . '-' . $profileImageFile->guessExtension();
 
-                // dd(
-                //     $originalFileName,
-                //     $safeFilename,
-                //     $newFileName
-                // );
                 try {
                     $profileImageFile->move(
                         $this->getParameter('profiles_directory'),

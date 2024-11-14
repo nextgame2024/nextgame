@@ -3,19 +3,19 @@
 namespace App\Form;
 
 use App\Entity\User;
-use App\Entity\Divisions;
 use App\Entity\Location;
+use App\Entity\Divisions;
 use App\Entity\UserProfile;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserExtraInfoFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // dd($this->getUser());
         $builder
             ->add('name')
             ->add('phone')
@@ -34,6 +34,17 @@ class UserExtraInfoFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a location',
                 'required' => false,
+            ])
+            ->add('ratingCentralId')
+            ->add('registered', ChoiceType::class, [
+                'label' => 'Registered (Ratings Central)',
+                'choices' => [
+                    'Yes' => 'Y',
+                    'No' => 'N'
+                ],
+                'placeholder' => 'Choose a state',
+                'required' => true,
+                'attr' => ['class' => 'form-control']
             ])
         ;
     }

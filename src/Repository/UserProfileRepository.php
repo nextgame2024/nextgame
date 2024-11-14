@@ -52,4 +52,13 @@ class UserProfileRepository extends ServiceEntityRepository
         // Fetch the results using PDO's fetchAll method
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function findUsersByIds(array $userIds)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.id IN (:userIds)')
+            ->setParameter('userIds', $userIds)
+            ->getQuery()
+            ->getResult();
+    }
 }

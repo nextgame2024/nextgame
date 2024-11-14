@@ -93,7 +93,7 @@
 
     function updateScore(gameId, playerId) {
         showLoadingSpinner();
-        //fetch(`/public/index.php/scoreboard/add-score-player/${gameId}/${playerId}`, {
+        //fetch(`/app/public/index.php/scoreboard/add-score-player/${gameId}/${playerId}`, {
         fetch(`/scoreboard/add-score-player/${gameId}/${playerId}`, {
             method: 'POST',
             headers: {
@@ -114,7 +114,7 @@
 
     function subtractScore(gameId, playerId) {
         showLoadingSpinner();
-        //fetch(`/public/index.php/scoreboard/subtract-score/${gameId}/${playerId}`, {
+        //fetch(`/app/public/index.php/scoreboard/subtract-score/${gameId}/${playerId}`, {
         fetch(`/scoreboard/subtract-score/${gameId}/${playerId}`, {
             method: 'POST',
             headers: {

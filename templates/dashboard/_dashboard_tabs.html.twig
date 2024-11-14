@@ -54,5 +54,14 @@
             {% endblock %}
         {% endembed %}
 
+        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_ratings_central', classes: 'ml-2' } %}
+            {% block content %}
+                | Ratings Central 
+            {% endblock %}
+            {% block path %}
+            {{ path('app_dashboard_ratings_central') }}
+            {% endblock %}
+        {% endembed %}
+
     {% endblock %}
 {% endembed %}

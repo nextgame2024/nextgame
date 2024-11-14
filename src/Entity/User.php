@@ -39,42 +39,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?UserProfile $userProfile = null;
 
-    /**
-     * @var Collection<int, MicroPost>
-     */
-    #[ORM\ManyToMany(targetEntity: MicroPost::class, mappedBy: 'likedBy')]
-    private Collection $liked;
-
-    /**
-     * @var Collection<int, MicroPost>
-     */
-    #[ORM\OneToMany(targetEntity: MicroPost::class, mappedBy: 'author')]
-    private Collection $posts;
-
-    /**
-     * @var Collection<int, Comment>
-     */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'author')]
-    private Collection $comments;
-
     #[ORM\Column]
     private bool $isVerified = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $bannedUntil = null;
-
-    /**
-     * @var Collection<int, self>
-     */
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followers')]
-    #[ORM\JoinTable('followers')]
-    private Collection $follows;
-
-    /**
-     * @var Collection<int, self>
-     */
-    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'follows')]
-    private Collection $followers;
 
     #[ORM\Column(length: 5)]
     private ?string $active = 'Y';
@@ -82,11 +51,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->active = 'Y';
-        $this->liked = new ArrayCollection();
-        $this->posts = new ArrayCollection();
-        $this->comments = new ArrayCollection();
-        $this->follows = new ArrayCollection();
-        $this->followers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -185,93 +149,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, MicroPost>
-     */
-    public function getLiked(): Collection
-    {
-        return $this->liked;
-    }
-
-    public function addLiked(MicroPost $liked): static
-    {
-        if (!$this->liked->contains($liked)) {
-            $this->liked->add($liked);
-            $liked->addLikedBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLiked(MicroPost $liked): static
-    {
-        if ($this->liked->removeElement($liked)) {
-            $liked->removeLikedBy($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, MicroPost>
-     */
-    public function getPosts(): Collection
-    {
-        return $this->posts;
-    }
-
-    public function addPost(MicroPost $post): static
-    {
-        if (!$this->posts->contains($post)) {
-            $this->posts->add($post);
-            $post->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removePost(MicroPost $post): static
-    {
-        if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
-            if ($post->getAuthor() === $this) {
-                $post->setAuthor(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Comment>
-     */
-    public function getComments(): Collection
-    {
-        return $this->comments;
-    }
-
-    public function addComment(Comment $comment): static
-    {
-        if (!$this->comments->contains($comment)) {
-            $this->comments->add($comment);
-            $comment->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComment(Comment $comment): static
-    {
-        if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
-            if ($comment->getAuthor() === $this) {
-                $comment->setAuthor(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function isVerified(): bool
     {
         return $this->isVerified;
@@ -292,57 +169,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBannedUntil(?\DateTimeInterface $bannedUntil): static
     {
         $this->bannedUntil = $bannedUntil;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getFollows(): Collection
-    {
-        return $this->follows;
-    }
-
-    public function follow(self $follow): static
-    {
-        if (!$this->follows->contains($follow)) {
-            $this->follows->add($follow);
-        }
-
-        return $this;
-    }
-
-    public function unfollow(self $follow): static
-    {
-        $this->follows->removeElement($follow);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getFollowers(): Collection
-    {
-        return $this->followers;
-    }
-
-    public function addFollower(self $follower): static
-    {
-        if (!$this->followers->contains($follower)) {
-            $this->followers->add($follower);
-            $follower->follow($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFollower(self $follower): static
-    {
-        if ($this->followers->removeElement($follower)) {
-            $follower->unfollow($this);
-        }
 
         return $this;
     }

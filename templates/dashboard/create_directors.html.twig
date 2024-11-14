@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Settings → Director{% endblock %}
+
+{% block bread %}
+→ <a href="{{ path('app_dashboard_settings', { 'search_by': 'directors' }) }}">Settings</a> → Director
+{% endblock %}
+
+{% block body %}
+    <div class="flex items-center justify-center mt-1 bg-gray-50 dark:bg-gray-900">
+        <div class="w-full mx-auto">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                {% for flash_error in app.flashes('verify_email_error') %}
+                    <div class="rounded-md p-2 border-red-300 bg-red-50 border dark:border-red-600 dark:bg-red-700 dark:text-white mb-4" role="alert">{{ flash_error }}</div>
+                {% endfor %}
+
+                {{ form_errors(form) }}
+
+                {{ form_start(form) }}
+                <div class="text-xl">
+                    Director
+                </div>
+                <div class="text-gray-500 mb-4 pb-4 border-b border-gray-300">
+                    Complete the requested information
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                
+                    <div>
+                        {{ form_label(form.name, 'Name', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+                        {{ form_widget(form.name, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(form.enrolled, 'Enrolled', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+                        {{ form_widget(form.enrolled, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+                        {{ form_errors(form.enrolled) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(form.director_id, 'Director Id', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+                        {{ form_widget(form.director_id, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+                        {{ form_errors(form.director_id) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(form.password, 'Password', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+                        {{ form_widget(form.password, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+                        {{ form_errors(form.password) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(form.email, 'Email', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+                        {{ form_widget(form.email, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+
+                    <div>
+                        {{ form_label(form.location, 'Location', {'label_attr': {'class': 'block text-sm text-gray-700 dark:text-gray-300 font-medium'}}) }}
+                        {{ form_widget(form.location, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+                        {{ form_errors(form.location) }}
+                    </div>
+
+                </div>
+
+                <div>
+                    <button type="submit" class="block w-full shadow-sm border-transparent bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-500 dark:hover:bg-yellow-600 text-black rounded-md border p-2 mt-4 mb-2">
+                        {{ isEdit ? 'Update' : 'Create' }}
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
