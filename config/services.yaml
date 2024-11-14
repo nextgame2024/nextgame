@@ -7,10 +7,6 @@ parameters:
   profiles: "/uploads/profiles/"
   # profiles: "/app/public/uploads/profiles/"
   profiles_directory: "%kernel.project_dir%/public%profiles%"
-  mailer_host: "smtp.zoho.com.au"
-  mailer_username: "generalmanager@nextgame.games"
-  mailer_password: "Goldenboot2024"
-  mailer_port: 587
 
 services:
   # default configuration for services in *this* file
