@@ -1,67 +1,81 @@
 {% embed 'shared/_tabs.html.twig' %}
     {% block tabs %}
-        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard', classes: 'ml-3' } %}
-            {% block content %}
-                Dashboard 
-            {% endblock %}
-            {% block path %}
-            {{ path('app_dashboard') }}
-            {% endblock %}
-        {% endembed %}
+        {% if is_granted('ROLE_VIEWER') or is_granted('ROLE_UMPIRE') or is_granted('ROLE_PLAYER') or is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
+            {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard', classes: 'ml-3' } %}
+                {% block content %}
+                    Dashboard 
+                {% endblock %}
+                {% block path %}
+                {{ path('app_dashboard') }}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
 
-        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_users', classes: 'ml-2' } %}
-            {% block content %}
-                | Users 
-            {% endblock %}
-            {% block path %}
-            {{ path('app_dashboard_users') }}
-            {% endblock %}
-        {% endembed %}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
+            {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_users', classes: 'ml-2' } %}
+                {% block content %}
+                    | Users 
+                {% endblock %}
+                {% block path %}
+                {{ path('app_dashboard_users') }}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
 
-        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_tournament', classes: 'ml-2' } %}
-            {% block content %}
-                | Tournaments  
-            {% endblock %}
-            {% block path %}
-            {{ path('app_dashboard_tournament') }}
-            {% endblock %}
-        {% endembed %}
+        {% if is_granted('ROLE_PLAYER') or is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
+            {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_tournament', classes: 'ml-2' } %}
+                {% block content %}
+                    | Tournaments  
+                {% endblock %}
+                {% block path %}
+                {{ path('app_dashboard_tournament') }}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
 
-        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_registration', classes: 'ml-2' } %}
-            {% block content %}
-                | Registration 
-            {% endblock %}
-            {% block path %}
-            {{ path('app_dashboard_registration') }}
-            {% endblock %}
-        {% endembed %}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
+            {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_registration', classes: 'ml-2' } %}
+                {% block content %}
+                    | Registration 
+                {% endblock %}
+                {% block path %}
+                {{ path('app_dashboard_registration') }}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
 
-        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_games', classes: 'ml-2' } %}
-            {% block content %}
-                | Matches 
-            {% endblock %}
-            {% block path %}
-            {{ path('app_dashboard_games') }}
-            {% endblock %}
-        {% endembed %}
+        {% if is_granted('ROLE_UMPIRE') or is_granted('ROLE_PLAYER') or is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
+            {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_games', classes: 'ml-2' } %}
+                {% block content %}
+                    | Matches 
+                {% endblock %}
+                {% block path %}
+                {{ path('app_dashboard_games') }}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
 
-        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_settings', classes: 'ml-2' } %}
-            {% block content %}
-                | Settings 
-            {% endblock %}
-            {% block path %}
-            {{ path('app_dashboard_settings') }}
-            {% endblock %}
-        {% endembed %}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
+            {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_settings', classes: 'ml-2' } %}
+                {% block content %}
+                    | Settings 
+                {% endblock %}
+                {% block path %}
+                {{ path('app_dashboard_settings') }}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
 
-        {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_ratings_central', classes: 'ml-2' } %}
-            {% block content %}
-                | Ratings Central 
-            {% endblock %}
-            {% block path %}
-            {{ path('app_dashboard_ratings_central') }}
-            {% endblock %}
-        {% endembed %}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
+            {% embed 'shared/_tab.html.twig' with { route: 'app_dashboard_ratings_central', classes: 'ml-2' } %}
+                {% block content %}
+                    | Ratings Central 
+                {% endblock %}
+                {% block path %}
+                {{ path('app_dashboard_ratings_central') }}
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
 
     {% endblock %}
 {% endembed %}

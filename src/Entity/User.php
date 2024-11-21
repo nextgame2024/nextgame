@@ -27,7 +27,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     /**
@@ -88,11 +88,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
-        if ($this->isVerified()) {
-            $roles[] = 'ROLE_WRITER';
+        if (!in_array('ROLE_PLAYER', $roles, true)) {
+            $roles[] = 'ROLE_PLAYER';
         }
 
         return array_unique($roles);

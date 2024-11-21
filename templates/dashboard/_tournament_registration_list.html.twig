@@ -80,6 +80,7 @@
                         </select>
                     </div>
                     <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex items-center space-x-3 justify-end relative group">
+                    {% if is_granted('ROLE_PLAYER') or is_granted('ROLE_SUPER') %}
                         {% if registration.tournament_status == 'Open' %}
                             <button type="button" class="text-yellow-500 text-2xl" data-modal-target="deleteModal-{{ registration.tournament_registration_id }}">
                                 <i class="fa-duotone fa-solid fa-user-check"></i>
@@ -95,6 +96,7 @@
                                 Leave the tournament
                             </div>
                         {% endif %}
+                    {% endif %}
                     </div>
                 </div>
 

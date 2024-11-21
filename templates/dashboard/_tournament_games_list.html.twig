@@ -135,6 +135,7 @@
                         </div>
                     {% endif %}
                     <div class="col-span-1 sm:col-span-2 lg:col-span-1 flex justify-center items-center space-x-3 relative">
+                    {% if is_granted('ROLE_UMPIRE') or is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
                         {# <div>
                             <label for="team_{{ games.game_id }}" class="font-medium">Payment:</label>
                             <select id="team_{{ games.game_id}}" name="team" 
@@ -218,6 +219,12 @@
                                 </div>
                             </a>
                         {% endif %}
+                    {% endif %}
+                    {% if is_granted('ROLE_PLAYER') %}
+                        <div class="flex justify-center items-center h-[45px]">
+                            <img src="{{ profiles ~ 'trofeo.png' }}" class="inline-block h-[45px] w-[45px] rounded-full ring-2 ring-white dark:ring-gray" />
+                        </div>
+                    {% endif %}
                     </div>
                 </div>
 

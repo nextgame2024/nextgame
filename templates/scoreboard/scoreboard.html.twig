@@ -15,8 +15,8 @@
 <script>
   const gameId = {{ id }};
   setInterval(() => {
-    //fetch(`/app/public/index.php/scoreboard/${gameId}`, {
-    fetch(`/scoreboard/${gameId}`, {
+    fetch(`/app/public/index.php/scoreboard/${gameId}`, {
+    //fetch(`/scoreboard/${gameId}`, {
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
       }
