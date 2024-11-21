@@ -69,66 +69,70 @@
                     </div>
                     <div class="flex items-center space-x-3 justify-end">
                         <!-- Registered User Button -->
-                        {% if registration.registeredUser %}
-                            <div class="relative group">
-                                <button type="button" class="text-green-500 text-2xl" data-modal-target="registrationModal-{{ registration.id }}" disabled>
-                                    <i class="fa-duotone fa-solid fa-user-check"></i>
-                                </button>
-                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                    Registered
+                        {% if is_granted('ROLE_PLAYER') or is_granted('ROLE_SUPER') %}
+                            {% if registration.registeredUser %}
+                                <div class="relative group">
+                                    <button type="button" class="text-green-500 text-2xl" data-modal-target="registrationModal-{{ registration.id }}" disabled>
+                                        <i class="fa-duotone fa-solid fa-user-check"></i>
+                                    </button>
+                                    <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                        Registered
+                                    </div>
                                 </div>
-                            </div>
-                        {% elseif registration.status != 'Open' %}
-                            <div class="relative group">
-                                <button type="button" class="text-gray-400 text-2xl" data-modal-target="registrationModal-{{ registration.id }}" disabled>
-                                    <i class="fa-duotone fa-solid fa-user-check"></i>
-                                </button>
-                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                    Closed
+                            {% elseif registration.status != 'Open' %}
+                                <div class="relative group">
+                                    <button type="button" class="text-gray-400 text-2xl" data-modal-target="registrationModal-{{ registration.id }}" disabled>
+                                        <i class="fa-duotone fa-solid fa-user-check"></i>
+                                    </button>
+                                    <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                        Closed
+                                    </div>
                                 </div>
-                            </div>
-                        {% else %}
-                            <div class="relative group">
-                                <button type="button" class="text-yellow-500 text-2xl" data-modal-target="registrationModal-{{ registration.id }}">
-                                    <i class="fa-duotone fa-solid fa-user-check"></i>
-                                </button>
-                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                    Register here
+                            {% else %}
+                                <div class="relative group">
+                                    <button type="button" class="text-yellow-500 text-2xl" data-modal-target="registrationModal-{{ registration.id }}">
+                                        <i class="fa-duotone fa-solid fa-user-check"></i>
+                                    </button>
+                                    <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                        Register here
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         {% endif %}
 
                         <!-- Create Games Button -->
-                        {% if registration.status == 'Matches created' %}
-                            <div class="relative group">
-                                <button type="button" class="text-green-500 text-2xl" data-modal-target="createGamesModal-{{ registration.id }}" disabled>
-                                    <i class="fa-duotone fa-solid fa-table-tennis-paddle-ball"></i>
-                                </button>
-                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                    Match created
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER') %}
+                            {% if registration.status == 'Matches created' %}
+                                <div class="relative group">
+                                    <button type="button" class="text-green-500 text-2xl" data-modal-target="createGamesModal-{{ registration.id }}" disabled>
+                                        <i class="fa-duotone fa-solid fa-table-tennis-paddle-ball"></i>
+                                    </button>
+                                    <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                        Match created
+                                    </div>
                                 </div>
-                            </div>
-                        {% else %}
+                            {% else %}
+                                <div class="relative group">
+                                    <button type="button" class="text-yellow-500 text-2xl" data-modal-target="createGamesModal-{{ registration.id }}">
+                                        <i class="fa-duotone fa-solid fa-table-tennis-paddle-ball"></i>
+                                    </button>
+                                    <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
+                                        Create Matches
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Delete Button -->
                             <div class="relative group">
-                                <button type="button" class="text-yellow-500 text-2xl" data-modal-target="createGamesModal-{{ registration.id }}">
-                                    <i class="fa-duotone fa-solid fa-table-tennis-paddle-ball"></i>
+                                <button type="button" class="text-red-500 text-2xl" data-modal-target="deleteModal-{{ registration.id }}">
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
-                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2">
-                                    Create Matches
+                                <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
+                                    style="left: 50%; transform: translateX(-50%) translateX(-3px);">
+                                    Delete
                                 </div>
                             </div>
                         {% endif %}
-
-                        <!-- Delete Button -->
-                        <div class="relative group">
-                            <button type="button" class="text-red-500 text-2xl" data-modal-target="deleteModal-{{ registration.id }}">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                            <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded py-1 px-2"
-                                style="left: 50%; transform: translateX(-50%) translateX(-3px);">
-                                Delete
-                            </div>
-                        </div>
                     </div>
                 </div>
 
